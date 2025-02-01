@@ -1,4 +1,4 @@
-# 🔹 Python
+# Python
 *.pyc
 *.pyo
 *.pyd
@@ -6,24 +6,24 @@ __pycache__/
 *.swp
 *.swo
 
-# 🔹 Virtual Environment
+# Virtual Environment
 venv/
 .env/
 .venv/
 pip-log.txt
 pip-delete-this-directory.txt
 
-# 🔹 PyCharm
+# PyCharm
 .idea/
 *.iml
 
-# 🔹 Logs e Output temporanei
+# Logs e Output temporanei
 logs/
 *.log
 debug.log
 nohup.out
 
-# 🔹 Datasets e output del modello
+# Datasets e output del modello
 data/
 *.csv
 *.xlsx
@@ -33,12 +33,12 @@ data/
 *.db
 *.sqlite3
 
-# 🔹 Checkpoints e pesi del modello
+# Checkpoints e pesi del modello
 checkpoints/
 *.ckpt
 *.hdf5
 
-# 🔹 Risultati e file di output
+# Risultati e file di output
 outputs/
 results/
 *.png
@@ -46,6 +46,6 @@ results/
 *.jpeg
 *.mp4
 
-# 🔹 Jupyter Notebook e cache
+# Jupyter Notebook e cache
 .ipynb_checkpoints/
 *.ipynb

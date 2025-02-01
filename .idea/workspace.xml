@@ -4,43 +4,42 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00af345b-75e5-47ac-b358-b44001119cd5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/stroke-prediction-ML.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/processed/placeholder" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/raw/placeholder" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notebooks/placeholder" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/placeholder" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/placeholder" afterDir="false" />
+    <list default="true" id="00af345b-75e5-47ac-b358-b44001119cd5" name="Changes" comment="Project Setup">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/raw/placeholder" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/placeholder" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_exploration.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "breaksomeoff"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;breaksomeoff&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/breaksomeoff/stroke-prediction-ML",
-    "accountId": "e9e900dd-886d-442b-8c07-8b33073a3502"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/breaksomeoff/stroke-prediction-ML&quot;,
+    &quot;accountId&quot;: &quot;e9e900dd-886d-442b-8c07-8b33073a3502&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2sLe8IGuFw1vIrrTTM9dr1lEedb" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -51,8 +50,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.data_exploration.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/alex3/PycharmProjects/stroke-prediction-ML/src",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -68,6 +69,9 @@
       <recent name="C:\Users\alex3\PycharmProjects\stroke-prediction-ML\src" />
       <recent name="C:\Users\alex3\PycharmProjects\stroke-prediction-ML\scripts" />
       <recent name="C:\Users\alex3\PycharmProjects\stroke-prediction-ML\notebooks" />
+      <recent name="C:\Users\alex3\PycharmProjects\stroke-prediction-ML\data\raw" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\alex3\PycharmProjects\stroke-prediction-ML\data\raw" />
     </key>
   </component>
@@ -88,10 +92,14 @@
       <option name="presentableId" value="Default" />
       <updated>1738239125163</updated>
       <workItem from="1738239141284" duration="1089000" />
+      <workItem from="1738404185504" duration="4372000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/stroke_prediction_ML$data_exploration.coverage" NAME="data_exploration Coverage Results" MODIFIED="1738408070654" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>
