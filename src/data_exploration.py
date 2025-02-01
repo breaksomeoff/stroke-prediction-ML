@@ -303,18 +303,17 @@ def preliminary_insights(df, num_features, cat_features):
     print()
 
     print("Strategie suggerite:")
-    print("- Imputare i valori mancanti, in particolare per 'bmi', utilizzando mediana o altri metodi.")
-    print("- Gestire le categorie atipiche, ad esempio consolidando la categoria 'Other' in 'gender'.")
-    print("- Bilanciare la classe target 'stroke' mediante tecniche di oversampling (SMOTE) o undersampling.")
+    print("- Imputare i valori mancanti, in particolare per 'bmi', utilizzando la mediana.")
+    print("- Gestire le categorie atipiche, come la categoria 'Other' in 'gender'.")
+    print("- Bilanciare la classe target 'stroke' mediante tecnica SMOTE.")
     print("- Il One-Hot Encoding è stato applicato per l'analisi della correlazione, ma dovrà essere rifatto nel pre-processing prima dell'addestramento del modello.\n")
 
 # =============================================================================
 # FUNZIONE PRINCIPALE
 # =============================================================================
 
-def main():
+def eda(file_path):
     # 1) Caricamento del Dataset e Overview
-    file_path = "../data/raw/stroke-data.csv"
     df = load_dataset(file_path)
     print("\n##############################")
     print("STEP 1: OVERVIEW DEL DATASET")
@@ -367,7 +366,3 @@ def main():
     print("STEP 5: INSIGHT PRELIMINARI E STRATEGIE DI PRE-PROCESSING")
     print("########################################\n")
     preliminary_insights(df, num_features, cat_features)
-
-
-if __name__ == '__main__':
-    main()
