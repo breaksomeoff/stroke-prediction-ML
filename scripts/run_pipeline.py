@@ -18,7 +18,8 @@ def main():
     2) Pre-processing del dataset
     3) Split dei dati in Training e Test
     4) Addestramento del modello
-    5) Valutazione delle performance
+    5) Validazione del modello
+    6) Valutazione delle performance
     """
     print("\n🔎 STEP 1: Esplorazione dei dati...")
     eda(RAW_DATA_PATH)
@@ -32,8 +33,12 @@ def main():
 
     print("\n🎯 STEP 4: Addestramento del modello...")
     train_model(TRAIN_DATA_PATH, MODEL_PATH)
+    
+    print("\n🔍 STEP 5: Validazione del modello...")
+    #attenzione al path assegnato
+    validate_model(MODEL_PATH)
 
-    print("\n📊 STEP 5: Valutazione del modello...")
+    print("\n📊 STEP 6: Valutazione del modello...")
     evaluate_model(TEST_DATA_PATH, MODEL_PATH)
     """
 
