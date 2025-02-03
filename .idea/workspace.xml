@@ -5,10 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00af345b-75e5-47ac-b358-b44001119cd5" name="Changes" comment="Project Setup">
+      <change afterPath="$PROJECT_DIR$/src/train_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/train_test_smote.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/stroke-prediction-ML.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/stroke-prediction-ML.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/raw/placeholder" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/placeholder" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_exploration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/run_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/run_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data_preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_preprocessing.py" afterDir="false" />
+    </list>
+    <list id="7b603b48-300a-4e5d-a486-3aaafb7872b6" name="Changes by adria" comment="">
+      <change beforePath="$PROJECT_DIR$/scripts/run_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/run_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data_exploration.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_exploration.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,10 +42,20 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/breaksomeoff/stroke-prediction-ML&quot;,
-    &quot;accountId&quot;: &quot;e9e900dd-886d-442b-8c07-8b33073a3502&quot;
+    &quot;url&quot;: &quot;https://github.com/breaksomeoff/stroke-prediction-ML.git&quot;,
+    &quot;accountId&quot;: &quot;19b5ad74-fcaf-4581-9c13-dd14607a72df&quot;
   }
 }</component>
+  <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/scripts/run_pipeline.py">
+      <ranges>
+        <range start1="2" end1="4" start2="2" end2="4" changelist="00af345b-75e5-47ac-b358-b44001119cd5" />
+        <range start1="29" end1="32" start2="29" end2="31" changelist="00af345b-75e5-47ac-b358-b44001119cd5" />
+        <range start1="33" end1="33" start2="32" end2="33" changelist="00af345b-75e5-47ac-b358-b44001119cd5" />
+        <range start1="53" end1="54" start2="53" end2="59" changelist="7b603b48-300a-4e5d-a486-3aaafb7872b6" />
+      </ranges>
+    </file>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -50,8 +69,11 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
     "Python.data_exploration.executor": "Run",
+    "Python.run_pipeline.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/alex3/PycharmProjects/stroke-prediction-ML/src",
@@ -60,7 +82,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -72,14 +94,46 @@
       <recent name="C:\Users\alex3\PycharmProjects\stroke-prediction-ML\data\raw" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Alessio\PycharmProjects\stroke-prediction-ML\data" />
+      <recent name="C:\Users\Alessio\PycharmProjects\stroke-prediction-ML\data\raw" />
       <recent name="C:\Users\alex3\PycharmProjects\stroke-prediction-ML\data\raw" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="run_pipeline" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="stroke-prediction-ML" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/run_pipeline.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.run_pipeline" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23339.19" />
-        <option value="bundled-python-sdk-0029f7779945-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23339.19" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-PY-243.22562.220" />
+        <option value="bundled-python-sdk-0fc6c617c4bd-9a18a617cbe4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.22562.220" />
       </set>
     </attachedChunks>
   </component>
@@ -93,6 +147,9 @@
       <updated>1738239125163</updated>
       <workItem from="1738239141284" duration="1089000" />
       <workItem from="1738404185504" duration="4372000" />
+      <workItem from="1738429682419" duration="5000" />
+      <workItem from="1738429724046" duration="662000" />
+      <workItem from="1738587872681" duration="5828000" />
     </task>
     <servers />
   </component>
@@ -101,5 +158,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/stroke_prediction_ML$data_exploration.coverage" NAME="data_exploration Coverage Results" MODIFIED="1738408070654" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/stroke_prediction_ML$run_pipeline.coverage" NAME="run_pipeline Coverage Results" MODIFIED="1738598639342" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
   </component>
 </project>

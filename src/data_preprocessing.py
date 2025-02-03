@@ -1,12 +1,13 @@
 import pandas as pd
 import os
+from sklearn.preprocessing import LabelEncoder
+
 
 def load_data(file_path: str) -> pd.DataFrame:
     """
     Carica il dataset dal file CSV e restituisce un DataFrame.
     """
-    df = pd.read_csv(file_path)
-    return df
+    return pd.read_csv(file_path)
 
 
 def merge_rare_categories(df: pd.DataFrame) -> pd.DataFrame:
@@ -23,6 +24,7 @@ def merge_rare_categories(df: pd.DataFrame) -> pd.DataFrame:
         )
     return df
 
+
 def impute_bmi_with_median(df: pd.DataFrame) -> pd.DataFrame:
     """
     Imputa i valori mancanti di 'bmi' con la mediana.
@@ -33,49 +35,76 @@ def impute_bmi_with_median(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def encode_categorical(df: pd.DataFrame, drop_first: bool = True) -> pd.DataFrame:
+def encode_categorical(df: pd.DataFrame, encoding_type: str = "one-hot") -> pd.DataFrame:
     """
     Esegue l'encoding delle variabili categoriche.
-    Di default usa drop_first=True per evitare collinearità.
+    - 'one-hot' per Random Forest
+    - 'label' per XGBoost
     """
-    # Identifichiamo le colonne categoriche/oggetto
     cat_cols = df.select_dtypes(include=['object', 'category']).columns
 
-    # One-Hot Encoding
-    df_encoded = pd.get_dummies(df, columns=cat_cols, drop_first=drop_first)
+    if encoding_type == "one-hot":
+        df_encoded = pd.get_dummies(df, columns=cat_cols, drop_first=False)
+    elif encoding_type == "label":
+        label_encoders = {}
+        for col in cat_cols:
+            le = LabelEncoder()
+            df[col] = le.fit_transform(df[col])
+            label_encoders[col] = le
+        df_encoded = df
+    else:
+        raise ValueError("encoding_type deve essere 'one-hot' o 'label'")
+
     return df_encoded
 
 
-def preprocess_data(file_path: str, output_path: str) -> pd.DataFrame:
+def remove_unwanted_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Esegue l'intero flusso di pre-processing base:
-      1) Caricamento dati
-      2) Merge categorie rare ('Never_worked' -> 'children')
-      3) Imputazione 'bmi' con mediana
-      4) One-Hot Encoding per tutte le categoriche
+    Rimuove le colonne One-Hot complementari non desiderate,
+    mantenendo una sola colonna per variabile binaria.
+    """
+    columns_to_remove = [
+        "gender_Female",
+        "ever_married_No",
+        "Residence_type_Rural"
+    ]
+    for col in columns_to_remove:
+        if col in df.columns:
+            df.drop(columns=[col], inplace=True)
+    return df
 
-    Restituisce un DataFrame pronto per lo split in train e test.
+
+def preprocess_data(file_path: str, output_path: str, encoding_type: str = "one-hot") -> pd.DataFrame:
     """
-    # Carica il dataset
+    Esegue l'intero flusso di pre-processing:
+      1) Caricamento dati
+      2) Merge categorie rare ('Never_worked' + 'children' -> 'No_job/Children')
+      3) Imputazione 'bmi' con mediana
+      4) Encoding delle categoriche
+      5) Rimozione delle colonne complementari per le variabili binarie
+    """
+    # 1) Caricamento dati
     df = load_data(file_path)
 
-    # Unione categorie rare ('Never_worked' e 'children' -> 'No_job/Children'
+    # 2) Merge delle categorie rare
     df = merge_rare_categories(df)
 
-    # Imputazione mediana BMI
+    # 3) Imputazione dei valori mancanti in 'bmi'
     df = impute_bmi_with_median(df)
 
-    df.drop(columns=['id'], inplace=True)
+    # Rimuoviamo la colonna 'id' se presente
+    if 'id' in df.columns:
+        df.drop(columns=['id'], inplace=True)
 
-    # Encoding delle categoriche
-    df = encode_categorical(df, drop_first=True)
+    # 4) Encoding delle variabili categoriche
+    df = encode_categorical(df, encoding_type)
 
-    # Crea la cartella 'data/processed' se non esiste
+    # 5) Rimozione colonne indesiderate
+    df = remove_unwanted_columns(df)
+
+    # Salvataggio del dataset preprocessato
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
-
-    # Salvare il DataFrame pre-processato
     df.to_csv(output_path, index=False)
-
     print(f"Dataset pre-processato salvato in: {output_path}")
 
     return df

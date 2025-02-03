@@ -331,6 +331,7 @@ def eda(file_path):
     print("STEP 3: DISTRIBUZIONE DELLE VARIABILI")
     print("########################################\n")
     # Variabili numeriche
+    print("Colonne presenti nel DataFrame dopo il pre-processing:", df.columns)
     num_features = ['age', 'avg_glucose_level', 'bmi']
     plot_numeric_distributions(df, num_features)
 

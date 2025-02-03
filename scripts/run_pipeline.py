@@ -1,7 +1,7 @@
 from src.data_exploration import eda
 from src.data_preprocessing import preprocess_data
-#from src.split_data import split_train_test
-#from src.train_model import train_model
+from src.train_test_smote import train_test_smote
+from src.train_model import train_model
 #from src.evaluate_model import evaluate_model
 
 # Definire i percorsi
@@ -27,10 +27,10 @@ def main():
     print("\n🚀 STEP 2: Pre-processing del dataset...")
     preprocess_data(RAW_DATA_PATH, PROCESSED_DATA_PATH)  # Salva automaticamente il file pre-processato
 
-    """
-    print("\n🔄 STEP 3: Split dei dati in Train e Test...")
-    split_train_test(PROCESSED_DATA_PATH, TRAIN_DATA_PATH, TEST_DATA_PATH)
+    print("\n🔄 STEP 3: Split dei dati in Train (+ SMOTE) e Test...")
+    train_test_smote(PROCESSED_DATA_PATH, TRAIN_DATA_PATH, TEST_DATA_PATH)
 
+    """
     print("\n🎯 STEP 4: Addestramento del modello...")
     train_model(TRAIN_DATA_PATH, MODEL_PATH)
     
@@ -51,4 +51,9 @@ if __name__ == "__main__":
     #2) Pre-processing DS ed encoding
     #preprocess_data(RAW_DATA_PATH, PROCESSED_DATA_PATH)
     #3) Esplorazione post pre-processing
-    eda(PROCESSED_DATA_PATH)
+    #eda(PROCESSED_DATA_PATH)
+    #4) Suddivisione in train e test e applicazione tecnica SMOTE per bilanciare le istanze della classe
+    # target meno rappresentata
+    train_test_smote(PROCESSED_DATA_PATH, TRAIN_DATA_PATH, TEST_DATA_PATH)
+    #5) Training del modello scelto attraverso la stringa passata alla funzione
+    train_model()
