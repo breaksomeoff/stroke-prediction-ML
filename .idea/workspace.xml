@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00af345b-75e5-47ac-b358-b44001119cd5" name="Changes" comment="Updated scripts to support both Random Forest and Gradient Boosting&#10;&#10;- Models are now loaded dynamically based on provided file paths.&#10;- Ensured consistency across the pipeline by standardizing function inputs.&#10;- Now pre-processing generates two CSV files: one with One-Hot Encoding and one with Label Encoding for better model compatibility.&#10;- Improved modularity for easier model comparison.&#10;&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;&quot;">
-      <change afterPath="$PROJECT_DIR$/src/evaluate_models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/validate_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/placeholder" beforeDir="false" afterPath="$PROJECT_DIR$/src/hyperparameter_tuning.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <list id="7b603b48-300a-4e5d-a486-3aaafb7872b6" name="Changes by adria" comment="Changes by adria" />
     <option name="SHOW_DIALOG" value="false" />
@@ -51,25 +49,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;Python.data_exploration.executor&quot;: &quot;Run&quot;,
-    &quot;Python.run_pipeline.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/alex3/PycharmProjects/stroke-prediction-ML/src&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "Python.data_exploration.executor": "Run",
+    "Python.run_pipeline.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/alex3/PycharmProjects/stroke-prediction-ML/src",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\alex3\PycharmProjects\stroke-prediction-ML\src" />
@@ -107,11 +105,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Python.run_pipeline" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
