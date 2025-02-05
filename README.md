@@ -86,18 +86,18 @@ pip install -r requirements.txt
   ```bash
   python src/data_preprocessing.py
   ```
-- **Addestrare il modello**:
+- **Addestramento dei modelli**:
   ```bash
   python src/train_model.py --model xgboost
   ```
-- **Valutazione del modello**:
+- **Valutazione dei modelli**:
   ```bash
-  python src/evaluate_model.py
+  python src/evaluate_models.py
   ```
 
 ---
 
-### 📈 Valutazione del modello  
+### 📈 Valutazione dei modelli  
 I modelli saranno valutati utilizzando le seguenti metriche:  
 ✔ **Accuracy**  
 ✔ **Precision, Recall, F1-score** (per gestire il bilanciamento delle classi)  
