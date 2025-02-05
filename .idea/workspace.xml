@@ -4,15 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00af345b-75e5-47ac-b358-b44001119cd5" name="Changes" comment="Implement train/test split, SMOTE, and custom column formatting&#10;&#10;This commit adds a new script that:&#10;- Splits the dataset into train/test sets using stratification.&#10;- Applies SMOTE on the training set to handle class imbalance (stroke=1).&#10;- Formats specific columns (age, avg_glucose_level, and bmi) to ensure consistency with original dataset structures&#10;&#10;The final train set (after SMOTE and formatting) and the test set (original or optionally formatted) are saved as CSV.&#10;&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;">
+    <list default="true" id="00af345b-75e5-47ac-b358-b44001119cd5" name="Changes" comment="Updated scripts to support both Random Forest and Gradient Boosting&#10;&#10;- Models are now loaded dynamically based on provided file paths.&#10;- Ensured consistency across the pipeline by standardizing function inputs.&#10;- Now pre-processing generates two CSV files: one with One-Hot Encoding and one with Label Encoding for better model compatibility.&#10;- Improved modularity for easier model comparison.&#10;&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;&quot;">
       <change afterPath="$PROJECT_DIR$/src/evaluate_models.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/validate_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/notebooks/placeholder" beforeDir="false" afterPath="$PROJECT_DIR$/src/hyperparameter_tuning.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/run_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/run_pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data_preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_preprocessing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/train_test_smote.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/train_test_smote.py" afterDir="false" />
     </list>
     <list id="7b603b48-300a-4e5d-a486-3aaafb7872b6" name="Changes by adria" comment="Changes by adria" />
     <option name="SHOW_DIALOG" value="false" />
@@ -142,7 +137,7 @@
       <workItem from="1738662746802" duration="7948000" />
       <workItem from="1738680742955" duration="4735000" />
       <workItem from="1738686210055" duration="2119000" />
-      <workItem from="1738758429775" duration="1236000" />
+      <workItem from="1738758429775" duration="1629000" />
     </task>
     <task id="LOCAL-00001" summary="Implement train/test split, SMOTE, and custom column formatting&#10;&#10;This commit adds a new script that:&#10;- Splits the dataset into train/test sets using stratification.&#10;- Applies SMOTE on the training set to handle class imbalance (stroke=1).&#10;- Formats specific columns (age, avg_glucose_level, and bmi) to ensure consistency with original dataset structures&#10;&#10;The final train set (after SMOTE and formatting) and the test set (original or optionally formatted) are saved as CSV.&#10;&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;">
       <option name="closed" value="true" />
@@ -152,7 +147,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738599467152</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Updated scripts to support both Random Forest and Gradient Boosting&#10;&#10;- Models are now loaded dynamically based on provided file paths.&#10;- Ensured consistency across the pipeline by standardizing function inputs.&#10;- Now pre-processing generates two CSV files: one with One-Hot Encoding and one with Label Encoding for better model compatibility.&#10;- Improved modularity for easier model comparison.&#10;&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;&quot;">
+      <option name="closed" value="true" />
+      <created>1738760917648</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1738760917648</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -162,7 +165,8 @@
     <MESSAGE value="Project Setup" />
     <MESSAGE value="Changes by adria" />
     <MESSAGE value="Implement train/test split, SMOTE, and custom column formatting&#10;&#10;This commit adds a new script that:&#10;- Splits the dataset into train/test sets using stratification.&#10;- Applies SMOTE on the training set to handle class imbalance (stroke=1).&#10;- Formats specific columns (age, avg_glucose_level, and bmi) to ensure consistency with original dataset structures&#10;&#10;The final train set (after SMOTE and formatting) and the test set (original or optionally formatted) are saved as CSV.&#10;&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement train/test split, SMOTE, and custom column formatting&#10;&#10;This commit adds a new script that:&#10;- Splits the dataset into train/test sets using stratification.&#10;- Applies SMOTE on the training set to handle class imbalance (stroke=1).&#10;- Formats specific columns (age, avg_glucose_level, and bmi) to ensure consistency with original dataset structures&#10;&#10;The final train set (after SMOTE and formatting) and the test set (original or optionally formatted) are saved as CSV.&#10;&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;" />
+    <MESSAGE value="Updated scripts to support both Random Forest and Gradient Boosting&#10;&#10;- Models are now loaded dynamically based on provided file paths.&#10;- Ensured consistency across the pipeline by standardizing function inputs.&#10;- Now pre-processing generates two CSV files: one with One-Hot Encoding and one with Label Encoding for better model compatibility.&#10;- Improved modularity for easier model comparison.&#10;&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated scripts to support both Random Forest and Gradient Boosting&#10;&#10;- Models are now loaded dynamically based on provided file paths.&#10;- Ensured consistency across the pipeline by standardizing function inputs.&#10;- Now pre-processing generates two CSV files: one with One-Hot Encoding and one with Label Encoding for better model compatibility.&#10;- Improved modularity for easier model comparison.&#10;&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;&quot;" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/stroke_prediction_ML$data_exploration.coverage" NAME="data_exploration Coverage Results" MODIFIED="1738408070654" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
