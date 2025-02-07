@@ -1,369 +1,443 @@
+# data_exploration.py
+# EDA per la predizione dell'ictus (versione con modifiche richieste):
+#   - Rimosse: dynamic pairplot, missing heatmap, missing vs target,
+#              boxplot con hue per age/avg_glucose_level/bmi, donut chart del target.
+#   - Aggiunti:
+#       * Hist per feature categoriche
+#       * Barplot ANOVA (numeriche)
+#       * Barplot Chi-Quadro (categoriche)
+
+import os
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import seaborn as sns
-from scipy.stats import chi2_contingency, f_oneway
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from scipy.stats import f_oneway, chi2_contingency
+from pyampute.exploration.mcar_statistical_tests import MCARTest
+from statsmodels.stats.outliers_influence import variance_inflation_factor
 
-"""
-EDA Script for the Stroke Prediction Dataset
-Dataset: stroke-data.csv (located in data/raw/)
-Questo script esegue l'analisi esplorativa dei dati (EDA).
-Utilizza Pandas, Seaborn, Matplotlib, SciPy e Statsmodels per:
-    - Caricamento e overview del dataset
-    - Analisi dei valori mancanti e duplicati
-    - Visualizzazione delle distribuzioni delle variabili numeriche e categoriche
-    - Analisi delle correlazioni (numeriche e categoriche) tramite:
-        * Heatmap (correlazione di Pearson)
-        * One-Hot Encoding
-        * Cramér’s V per variabili categoriche
-        * ANOVA per testare l’effetto delle categorie sulle variabili numeriche
-        * Test del chi-quadro per l'associazione tra variabili categoriche e il target stroke
-    - Estrazione di insight preliminari e suggerimenti di pre-processing
-"""
+from scripts import config
 
-# Configurazione globale per i plot
-plt.rcParams['figure.figsize'] = (10, 6)
-sns.set_theme(style='whitegrid')
+###############################################################################
+#                               Utility Functions
+###############################################################################
 
-
-# =============================================================================
-# FUNZIONI DI SUPPORTO
-# =============================================================================
-
-def load_dataset(file_path):
+def cramers_v(x, y):
     """
-    Carica il dataset da un file CSV.
-    :param file_path: Percorso del file CSV.
-    :return: DataFrame Pandas contenente il dataset.
-    """
-    df = pd.read_csv(file_path)
-    return df
-
-
-def overview_data(df):
-    """
-    Mostra una panoramica del dataset: prime 5 righe, info e statistiche descrittive.
-    """
-    print("=== Prime 5 righe del dataset ===")
-    print(df.head(), "\n")
-
-    print("=== Informazioni sul dataset ===")
-    df.info()
-    print()
-
-    print("=== Statistiche descrittive delle variabili numeriche ===")
-    print(df.describe(), "\n")
-
-
-def analyze_missing_duplicates(df):
-    """
-    Analizza i valori mancanti e i duplicati nel dataset.
-    """
-    print("=== Valori mancanti per colonna ===")
-    missing_counts = df.isnull().sum()
-    print(missing_counts, "\n")
-
-    print("=== Percentuale di valori mancanti per colonna (%) ===")
-    missing_percent = (df.isnull().mean() * 100).round(2)
-    print(missing_percent, "\n")
-
-    print("=== Numero di record duplicati ===")
-    duplicates = df.duplicated().sum()
-    print(duplicates, "\n")
-
-
-def plot_numeric_distributions(df, num_features):
-    """
-    Genera istogrammi con KDE per le variabili numeriche.
-    :param df: DataFrame contenente i dati.
-    :param num_features: Lista di nomi delle colonne numeriche.
-    """
-    for feature in num_features:
-        plt.figure()
-        sns.histplot(df[feature].dropna(), kde=True, bins=30, color='skyblue')
-        plt.title(f'Distribuzione di {feature}')
-        plt.xlabel(feature)
-        plt.ylabel('Frequenza')
-        plt.tight_layout()
-        plt.show()
-
-
-def plot_categorical_distributions(df, cat_features):
-    """
-    Genera barplot ordinati per frequenza per le variabili categoriche.
-    :param df: DataFrame contenente i dati.
-    :param cat_features: Lista di nomi delle colonne categoriche.
-    """
-    for feature in cat_features:
-        plt.figure()
-        # Ordinamento per frequenza decrescente
-        order = df[feature].value_counts().index
-        sns.countplot(
-            x=feature, data=df, order=order,
-            hue=feature,
-            dodge=False,
-            palette='viridis',
-            legend=False
-        )
-        plt.title(f'Conteggio per la variabile {feature}')
-        plt.xlabel(feature)
-        plt.ylabel('Frequenza')
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.show()
-
-        # Stampa la distribuzione testuale
-        print(f"=== Distribuzione della variabile '{feature}' ===")
-        print(df[feature].value_counts(), "\n")
-
-
-def plot_target_distribution(df, target):
-    """
-    Visualizza la distribuzione della classe target tramite un countplot.
-    :param df: DataFrame contenente i dati.
-    :param target: Nome della variabile target.
-    """
-    plt.figure()
-    sns.countplot(x=target, data=df, hue=target, dodge=False, palette='Set2', legend=False)
-    plt.title(f"Distribuzione della classe target '{target}'")
-    plt.xlabel(target)
-    plt.ylabel('Conteggio')
-    plt.tight_layout()
-    plt.show()
-
-    print(f"=== Distribuzione della variabile target '{target}' ===")
-    print(df[target].value_counts(), "\n")
-
-
-def plot_numeric_correlation_heatmap(df):
-    """
-    Calcola e visualizza la heatmap della matrice di correlazione per le variabili numeriche.
-    """
-    # Seleziona solo le colonne numeriche
-    numeric_df = df.select_dtypes(include=[np.number])
-    corr = numeric_df.corr()
-
-    print("=== Matrice di correlazione (variabili numeriche) ===")
-    print(corr, "\n")
-
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(corr, annot=True, fmt=".2f", cmap='coolwarm', linewidths=0.5)
-    plt.title("Heatmap delle correlazioni (variabili numeriche)")
-    plt.tight_layout()
-    plt.show()
-
-
-def compute_cramers_v(x, y):
-    """
-    Calcola il V di Cramer per due serie categoriche.
-    :param x: Serie Pandas (variabile categorica).
-    :param y: Serie Pandas (variabile categorica).
-    :return: Valore del V di Cramer.
+    Calcolo di Cramér's V per stimare la correlazione tra variabili categoriche.
     """
     confusion_matrix = pd.crosstab(x, y)
-    chi2, p, dof, expected = chi2_contingency(confusion_matrix)
+    chi2 = chi2_contingency(confusion_matrix)[0]
     n = confusion_matrix.sum().sum()
     phi2 = chi2 / n
     r, k = confusion_matrix.shape
-    # Correzione di bias
-    phi2corr = max(0, phi2 - ((k - 1) * (r - 1)) / (n - 1))
-    rcorr = r - ((r - 1) ** 2) / (n - 1)
-    kcorr = k - ((k - 1) ** 2) / (n - 1)
-    return np.sqrt(phi2corr / min((kcorr - 1), (rcorr - 1)))
+    phi2corr = max(0, phi2 - (k - 1)*(r - 1)/(n - 1))
+    rcorr = r - (r - 1)**2 / (n - 1)
+    kcorr = k - (k - 1)**2 / (n - 1)
+    return np.sqrt(phi2corr / min(kcorr - 1, rcorr - 1))
 
+def compute_cramers_v_matrix(df, cat_cols):
+    n = len(cat_cols)
+    results = np.zeros((n, n))
+    for i in range(n):
+        for j in range(i, n):
+            if i == j:
+                results[i, j] = 1.0
+            else:
+                val = cramers_v(df[cat_cols[i]], df[cat_cols[j]])
+                results[i, j] = val
+                results[j, i] = val
+    return pd.DataFrame(results, index=cat_cols, columns=cat_cols)
 
-def analyze_categorical_correlations(df, cat_features):
+def compute_vif(df, numeric_cols):
+    X = df[numeric_cols].dropna()
+    if X.empty or X.shape[1] < 2:
+        return pd.DataFrame({"feature": numeric_cols, "VIF": [np.nan]*len(numeric_cols)})
+    X = sm.add_constant(X)
+    vif_data = []
+    for i, col in enumerate(X.columns):
+        if col == "const":
+            continue
+        vif_value = variance_inflation_factor(X.values, i)
+        vif_data.append((col, vif_value))
+    return pd.DataFrame(vif_data, columns=["feature", "VIF"]).sort_values("VIF", ascending=False)
+
+###############################################################################
+#                       Modular Functions for Each Analysis
+###############################################################################
+
+def analyze_missing_values(data, report_file):
     """
-    Calcola la matrice del V di Cramer per le variabili categoriche.
-    :param df: DataFrame contenente i dati.
-    :param cat_features: Lista di colonne categoriche.
+    - Rimosso: heatmap e missing_vs_target come da richiesta.
+    - Manteniamo solo barplot e Little’s MCAR Test.
     """
-    cramers_matrix = pd.DataFrame(np.zeros((len(cat_features), len(cat_features))),
-                                  index=cat_features, columns=cat_features)
+    missing_plots_path = os.path.join(config.EDA_PLOTS_PATH, "missing_plots")
+    os.makedirs(missing_plots_path, exist_ok=True)
 
-    for col1 in cat_features:
-        for col2 in cat_features:
-            cramers_matrix.loc[col1, col2] = compute_cramers_v(df[col1], df[col2])
+    # Conteggio e percentuale
+    missing_count = data.isnull().sum()
+    missing_percent = (missing_count / len(data)) * 100
+    high_missing_cols = missing_percent[missing_percent > 30].index.tolist()
 
-    print("=== Matrice del V di Cramer per le variabili categoriche ===")
-    print(cramers_matrix, "\n")
+    # MCAR Test
+    numeric_only = data.select_dtypes(include=[np.number])
+    mcar_test = MCARTest(method='little')
+    p_value = mcar_test.little_mcar_test(numeric_only)
 
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(cramers_matrix, annot=True, fmt=".2f", cmap='coolwarm', linewidths=0.5)
-    plt.title("Heatmap del V di Cramer (variabili categoriche)")
+    # Bar plot (unico rimasto)
+    plt.figure(figsize=(6, 4))
+    missing_percent.sort_values(ascending=False).plot(
+        kind='bar', color='skyblue', edgecolor='black')
+    plt.title("Percentuale di Missing per Colonna")
+    plt.ylabel("Percentuale (%)")
     plt.tight_layout()
-    plt.show()
+    plt.savefig(os.path.join(missing_plots_path, "missing_barplot.png"))
+    plt.close()
 
+    # Scrittura nel report
+    report_file.write("=== Analisi Valori Mancanti ===\n")
+    report_file.write("Valori mancanti (count):\n")
+    report_file.write(str(missing_count) + "\n\n")
+    report_file.write("Percentuale di valori mancanti:\n")
+    report_file.write(str(missing_percent) + "\n\n")
+    report_file.write(f"Colonne con più del 30% di valori mancanti: {high_missing_cols}\n\n")
+    report_file.write(f"Little’s MCAR Test p-value = {p_value:.6f}\n")
+    interpretation = "MCAR" if p_value > 0.05 else "NON MCAR"
+    report_file.write(f"Interpretazione: {interpretation}\n\n")
 
-def perform_anova(df, num_features, cat_features):
+def plot_numeric_distributions(data, numeric_cols, report_file):
     """
-    Esegue ANOVA per valutare l'effetto delle variabili categoriche sulle variabili numeriche.
-    Per ogni coppia (variabile numerica, variabile categorica) viene calcolato il test ANOVA.
-    :param df: DataFrame contenente i dati.
-    :param num_features: Lista di variabili numeriche.
-    :param cat_features: Lista di variabili categoriche.
+    - Rimosso box_hue_{age,avg_glucose_level,bmi} (quindi niente boxplot per quelle 3)
+      ma se la richiesta dice "rimuovi i box hue solo per age, avg_glucose_level, bmi",
+      possiamo farlo con un semplice if:
+    - Manteniamo l'istogramma con hue comunque.
     """
-    print("=== Risultati ANOVA (effetto delle variabili categoriche su quelle numeriche) ===")
-    for num in num_features:
-        for cat in cat_features:
-            # Raggruppa i dati per la categoria corrente
-            groups = [group[num].dropna().values for name, group in df.groupby(cat)]
-            if len(groups) > 1:
-                stat, p_value = f_oneway(*groups)
-                print(f"ANOVA per {num} in base a {cat}: F = {stat:.2f}, p-value = {p_value:.4f}")
-    print()
+    target_col = config.TARGET_COLUMN
+    if target_col not in data.columns:
+        report_file.write("Target non presente, impossibile plot numeriche.\n\n")
+        return
 
+    numeric_dist_path = os.path.join(config.EDA_PLOTS_PATH, "numeric_distributions")
+    os.makedirs(numeric_dist_path, exist_ok=True)
 
-def one_hot_encoded_correlation(df, num_features, cat_features):
+    for col in numeric_cols:
+        # Se la colonna è tra age, avg_glucose_level, bmi => NIENTE boxplot
+        if col not in ["age", "avg_glucose_level", "bmi"]:
+            # boxplot con hue se la colonna è numerica ma NON è age/avg_glucose_level/bmi
+            plt.figure(figsize=(6, 4))
+            sns.boxplot(x=target_col, y=col, data=data, hue=target_col)
+            plt.title(f"Boxplot di {col} vs {target_col}")
+            plt.legend(loc='best')
+            plt.savefig(os.path.join(numeric_dist_path, f"box_hue_{col}.png"))
+            plt.close()
+
+        # Istogramma con hue (sempre)
+        plt.figure(figsize=(6, 4))
+        sns.histplot(data=data, x=col, hue=target_col, kde=True, element="step")
+        plt.title(f"Histogram di {col} suddiviso per {target_col}")
+        plt.savefig(os.path.join(numeric_dist_path, f"hist_{col}.png"))
+        plt.close()
+
+    report_file.write("=== Distribuzione Variabili Numeriche ===\n")
+    report_file.write("- Boxplot con hue rimosso per age, avg_glucose_level, bmi\n")
+    report_file.write("- Rimasti solo histogram con hue per tutte\n")
+    report_file.write(f"Plot salvati in: {numeric_dist_path}\n\n")
+
+def plot_categorical_distributions(data, cat_cols, report_file):
     """
-    Converte le variabili categoriche in variabili dummy (One-Hot Encoding)
-    e calcola la matrice di correlazione tra le variabili numeriche originali e quelle dummy.
-    :param df: DataFrame contenente i dati.
-    :param num_features: Lista di variabili numeriche.
-    :param cat_features: Lista di variabili categoriche.
+    Nuova funzione:
+    - Per ogni variabile categorica (eccetto target), crea un hist con hue=target
+      (se target esiste).
     """
-    # One-Hot Encoding per le colonne categoriche
-    df_dummies = pd.get_dummies(df[cat_features], drop_first=True)
-    # Unione delle variabili numeriche e dummy
-    df_combined = pd.concat([df[num_features], df_dummies], axis=1)
-    corr = df_combined.corr()
+    target_col = config.TARGET_COLUMN
+    if target_col not in data.columns:
+        report_file.write("Target non presente, nessun hist per categoriche.\n\n")
+        return
 
-    print("=== Matrice di correlazione (One-Hot Encoded per variabili categoriche) ===")
-    print(corr, "\n")
+    cat_dist_path = os.path.join(config.EDA_PLOTS_PATH, "categorical_distributions")
+    os.makedirs(cat_dist_path, exist_ok=True)
 
-    plt.figure(figsize=(12, 10))
-    sns.heatmap(corr, annot=True, fmt=".2f", cmap='coolwarm', linewidths=0.5)
-    plt.title("Heatmap delle correlazioni (numeriche e One-Hot Encoded)")
-    plt.tight_layout()
-    plt.show()
+    # Evitiamo di fare hist su 'stroke' stesso
+    cols_for_hist = [c for c in cat_cols if c != target_col]
 
+    for col in cols_for_hist:
+        plt.figure(figsize=(6, 4))
+        # Convertiamo la colonna categorica in string codes?
+        # Oppure usiamo countplot. Ma l'utente ha detto "solo hist".
+        # Per hist su categoriche, possiamo forzare discrete=True:
+        sns.histplot(data=data, x=col, hue=target_col, multiple="stack", discrete=True)
+        plt.title(f"Histogram categorico di {col} vs {target_col}")
+        plt.savefig(os.path.join(cat_dist_path, f"hist_categorical_{col}.png"))
+        plt.close()
 
-def chi_square_tests(df, cat_features, target):
+    report_file.write("=== Distribuzione Variabili Categoriche (Hist) ===\n")
+    report_file.write(f"Plot salvati in: {cat_dist_path}\n\n")
+
+def analyze_target_imbalance(data, report_file):
     """
-    Esegue il test del chi-quadro per verificare l'associazione tra le variabili categoriche e il target.
-    :param df: DataFrame contenente i dati.
-    :param cat_features: Lista di variabili categoriche.
-    :param target: Nome della variabile target.
+    Rimosso il donut chart.
+    Manteniamo solo la Pie chart.
     """
-    print("=== Risultati del test Chi-Quadrato per l'associazione con il target ===")
-    for feature in cat_features:
-        contingency_table = pd.crosstab(df[feature], df[target])
-        chi2, p, dof, expected = chi2_contingency(contingency_table)
-        print(f"Test Chi-Quadrato tra {feature} e {target}: chi2 = {chi2:.2f}, p-value = {p:.4f}")
-    print()
+    target_col = config.TARGET_COLUMN
+    if target_col not in data.columns:
+        report_file.write("Target non presente, impossibile analizzare squilibrio.\n\n")
+        return
 
+    target_imb_path = os.path.join(config.EDA_PLOTS_PATH, "target_imbalance")
+    os.makedirs(target_imb_path, exist_ok=True)
 
-def preliminary_insights(df, num_features, cat_features):
-    """
-    Stampa alcuni insight preliminari e suggerimenti di pre-processing.
-    - Outlier nelle variabili numeriche (verificabili con boxplot o analisi statistica).
-    - Variabili numeriche con alta correlazione ridondante.
-    - Variabili categoriche con classi poco rappresentate.
-    Suggerimenti:
-      - Imputazione dei valori mancanti (es. 'bmi')
-      - Gestione delle categorie atipiche (es. 'gender' con "Other")
-      - Bilanciamento della classe target 'stroke' (SMOTE o undersampling)
-      - One-Hot Encoding per le variabili categoriche
-    """
-    print("=== Insight Preliminari e Strategie di Pre-processing ===")
-    # Outlier: possiamo stampare le statistiche e suggerire di usare boxplot per l'analisi
-    for feature in num_features:
-        q1 = df[feature].quantile(0.25)
-        q3 = df[feature].quantile(0.75)
-        iqr = q3 - q1
-        lower_bound = q1 - 1.5 * iqr
-        upper_bound = q3 + 1.5 * iqr
-        n_outliers = df[(df[feature] < lower_bound) | (df[feature] > upper_bound)][feature].count()
-        print(f"{feature}: {n_outliers} possibili outlier rilevati (usando 1.5*IQR).")
-    print()
+    target_counts = data[target_col].value_counts(dropna=False)
 
-    # Variabili con alta correlazione ridondante (es. correlazione > 0.8)
-    numeric_df = df.select_dtypes(include=[np.number])
-    corr_matrix = numeric_df.corr().abs()
-    redundant_pairs = []
-    for i in range(len(corr_matrix.columns)):
-        for j in range(i + 1, len(corr_matrix.columns)):
-            if corr_matrix.iloc[i, j] > 0.8:
-                redundant_pairs.append((corr_matrix.columns[i], corr_matrix.columns[j], corr_matrix.iloc[i, j]))
-    if redundant_pairs:
-        print("Variabili numeriche con correlazione > 0.8 (possibile ridondanza):")
-        for pair in redundant_pairs:
-            print(f" - {pair[0]} e {pair[1]}: correlazione = {pair[2]:.2f}")
+    # Pie chart
+    plt.figure(figsize=(6, 6))
+    plt.pie(target_counts, labels=target_counts.index.astype(str), autopct='%1.1f%%', startangle=140)
+    plt.title("Distribuzione Target (Pie Chart)")
+    plt.savefig(os.path.join(target_imb_path, "target_piechart.png"))
+    plt.close()
+
+    report_file.write("=== Analisi dello Squilibrio del Target ===\n")
+    report_file.write(f"Conteggio Target:\n{str(target_counts)}\n\n")
+
+def analyze_correlations(data, numeric_cols, categorical_cols, report_file):
+    corr_path = os.path.join(config.EDA_PLOTS_PATH, "correlations")
+    os.makedirs(corr_path, exist_ok=True)
+
+    if len(numeric_cols) > 1:
+        corr_matrix_numeric = data[numeric_cols].corr(numeric_only=True)
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(corr_matrix_numeric, annot=True, cmap="coolwarm", fmt=".2f")
+        plt.title("Matrice di Correlazione (Numeriche)")
+        plt.savefig(os.path.join(corr_path, "corr_matrix_numeric.png"))
+        plt.close()
     else:
-        print("Non sono state rilevate correlazioni numeriche ridondanti significative.")
-    print()
+        corr_matrix_numeric = "Non abbastanza col. numeriche."
 
-    # Variabili categoriche con classi poco rappresentate (es. count < 5)
-    for feature in cat_features:
-        counts = df[feature].value_counts()
-        rare_classes = counts[counts < 5]
-        if not rare_classes.empty:
-            print(f"Variabile '{feature}' presenta classi con poche osservazioni:")
-            print(rare_classes)
-    print()
+    if len(categorical_cols) > 1:
+        cramer_matrix = compute_cramers_v_matrix(data, categorical_cols)
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(cramer_matrix, annot=True, cmap="coolwarm", fmt=".2f")
+        plt.title("Matrice di Cramér's V (Categoriche)")
+        plt.savefig(os.path.join(corr_path, "cramers_v_matrix.png"))
+        plt.close()
+    else:
+        cramer_matrix = "Non abbastanza col. categoriche."
 
-    print("Strategie suggerite:")
-    print("- Imputare i valori mancanti, in particolare per 'bmi', utilizzando la mediana.")
-    print("- Gestire le categorie atipiche, come la categoria 'Other' in 'gender'.")
-    print("- Bilanciare la classe target 'stroke' mediante tecnica SMOTE.")
-    print("- Il One-Hot Encoding è stato applicato per l'analisi della correlazione, ma dovrà essere rifatto nel pre-processing prima dell'addestramento del modello.\n")
+    vif_df = compute_vif(data, numeric_cols)
 
-# =============================================================================
-# FUNZIONE PRINCIPALE
-# =============================================================================
+    report_file.write("=== Correlazioni (Numeriche, Cramér's V, VIF) ===\n")
+    report_file.write(">> Matrice Numerica:\n")
+    report_file.write(str(corr_matrix_numeric) + "\n\n")
+    report_file.write(">> Cramér's V (Categoriche):\n")
+    report_file.write(str(cramer_matrix) + "\n\n")
+    report_file.write(">> VIF (Multicollinearità):\n")
+    report_file.write(str(vif_df) + "\n\n")
+    report_file.write(f"Grafici salvati in: {corr_path}\n\n")
 
-def eda(file_path):
-    # 1) Caricamento del Dataset e Overview
-    df = load_dataset(file_path)
-    print("\n##############################")
-    print("STEP 1: OVERVIEW DEL DATASET")
-    print("##############################\n")
-    overview_data(df)
+def analyze_outliers(data, numeric_cols, report_file):
+    outlier_path = os.path.join(config.EDA_PLOTS_PATH, "outliers")
+    os.makedirs(outlier_path, exist_ok=True)
 
-    # 2) Analisi dei Valori Mancanti e Duplicati
-    print("########################################")
-    print("STEP 2: VALORI MANCANTI E RECORD DUPLICATI")
-    print("########################################\n")
-    analyze_missing_duplicates(df)
+    outlier_summary = {}
+    for col in numeric_cols:
+        col_data = data[col].dropna()
+        if len(col_data) == 0:
+            continue
+        Q1, Q3 = col_data.quantile([0.25, 0.75])
+        IQR = Q3 - Q1
+        lb = Q1 - 1.5 * IQR
+        ub = Q3 + 1.5 * IQR
+        outliers = col_data[(col_data < lb) | (col_data > ub)]
 
-    # 3) Distribuzione delle Variabili
-    print("########################################")
-    print("STEP 3: DISTRIBUZIONE DELLE VARIABILI")
-    print("########################################\n")
-    # Variabili numeriche
-    print("Colonne presenti nel DataFrame dopo il pre-processing:", df.columns)
-    num_features = ['age', 'avg_glucose_level', 'bmi']
-    plot_numeric_distributions(df, num_features)
+        outlier_summary[col] = {
+            "Q1": Q1,
+            "Q3": Q3,
+            "IQR": IQR,
+            "lower_bound": lb,
+            "upper_bound": ub,
+            "num_outliers": len(outliers),
+            "percent_outliers": (len(outliers) / len(col_data)) * 100
+        }
 
-    # Variabili categoriche (modifica in base alle colonne presenti nel dataset)
-    cat_features = ['gender', 'work_type', 'smoking_status', 'ever_married', 'Residence_type',
-                    'hypertension', 'heart_disease']
-    plot_categorical_distributions(df, cat_features)
+        if config.TARGET_COLUMN in data.columns and col != config.TARGET_COLUMN:
+            plt.figure(figsize=(6, 4))
+            if data[config.TARGET_COLUMN].dtype in [int, float]:
+                sns.scatterplot(x=data[col], y=data[config.TARGET_COLUMN])
+                plt.title(f"Scatter: {col} vs {config.TARGET_COLUMN}")
+            else:
+                sns.scatterplot(
+                    x=data[col],
+                    y=np.random.normal(size=len(data)),
+                    hue=data[config.TARGET_COLUMN],
+                    palette="Set1"
+                )
+                plt.title(f"Scatter: {col} (x) hue={config.TARGET_COLUMN}")
+            plt.savefig(os.path.join(outlier_path, f"scatter_outliers_{col}.png"))
+            plt.close()
 
-    # Distribuzione della classe target 'stroke'
-    plot_target_distribution(df, 'stroke')
+    report_file.write("=== Outlier Analysis ===\n")
+    for col, info in outlier_summary.items():
+        report_file.write(
+            f"  * {col}: IQR={info['IQR']:.2f}, "
+            f"Bounds=({info['lower_bound']:.2f}, {info['upper_bound']:.2f}), "
+            f"Outliers={info['num_outliers']}, "
+            f"PercOut={info['percent_outliers']:.2f}%\n"
+        )
+    report_file.write("\nRaccomandazioni:\n")
+    report_file.write("- Verificare la natura degli outlier (errori vs valori estremi reali).\n")
+    report_file.write("- Valutare rimozione, trasformazioni (es. log) o winsorizing.\n\n")
 
-    # 4) Analisi delle Correlazioni
-    print("########################################")
-    print("STEP 4: ANALISI DELLE CORRELAZIONI")
-    print("########################################\n")
-    # 4a. Heatmap delle correlazioni numeriche
-    plot_numeric_correlation_heatmap(df)
+###############################################################################
+#                Funzioni per ANOVA e Chi-Quadrato con Plot
+###############################################################################
 
-    # 4b. Cramér’s V per variabili categoriche
-    analyze_categorical_correlations(df, cat_features)
+def plot_anova_results(anova_res, report_file):
+    """
+    anova_res: lista di tuple (col, f_stat, p_val) per feature numeriche.
+    Genera un barplot in base a -log10(p_val).
+    """
+    if not anova_res:
+        report_file.write("Nessun risultato ANOVA disponibile (target assente o monotono).\n")
+        return
 
-    # 4c. ANOVA: effetto delle variabili categoriche sulle variabili numeriche
-    perform_anova(df, num_features, cat_features)
+    anova_df = pd.DataFrame(anova_res, columns=["feature", "f_stat", "p_val"])
+    # Creiamo una colonna di importanza
+    anova_df["importance"] = -np.log10(anova_df["p_val"] + 1e-16)  # Evitiamo log(0)
+    anova_df.sort_values("importance", ascending=False, inplace=True)
 
-    # 4d. One-Hot Encoding per correlazioni tra numeriche e categoriche
-    one_hot_encoded_correlation(df, num_features, cat_features)
+    # Barplot
+    plt.figure(figsize=(8, 4))
+    sns.barplot(data=anova_df, x="importance", y="feature", color="skyblue", edgecolor="black")
+    plt.xlabel("-log10(p-value) [ANOVA]")
+    plt.ylabel("Feature")
+    plt.title("ANOVA Importance (Numeriche)")
+    anova_plot_path = os.path.join(config.EDA_PLOTS_PATH, "anova_plot.png")
+    plt.savefig(anova_plot_path)
+    plt.close()
 
-    # 4e. Test Chi-Quadrato per l'associazione tra variabili categoriche e il target 'stroke'
-    chi_square_tests(df, cat_features, 'stroke')
+    report_file.write(f"[ANOVA] Plot generato: {anova_plot_path}\n")
 
-    # 5) Insight Preliminari e Strategie di Pre-processing
-    print("########################################")
-    print("STEP 5: INSIGHT PRELIMINARI E STRATEGIE DI PRE-PROCESSING")
-    print("########################################\n")
-    preliminary_insights(df, num_features, cat_features)
+def plot_chi2_results(chi2_res, report_file):
+    """
+    chi2_res: lista di tuple (col, chi2_stat, p_val) per feature categoriche.
+    Genera un barplot in base a -log10(p_val).
+    """
+    if not chi2_res:
+        report_file.write("Nessun risultato Chi-Quadro disponibile (target assente o monotono).\n")
+        return
+
+    chi2_df = pd.DataFrame(chi2_res, columns=["feature", "chi2_stat", "p_val"])
+    chi2_df["importance"] = -np.log10(chi2_df["p_val"] + 1e-16)
+    chi2_df.sort_values("importance", ascending=False, inplace=True)
+
+    # Barplot
+    plt.figure(figsize=(8, 4))
+    sns.barplot(data=chi2_df, x="importance", y="feature", color="lightgreen", edgecolor="black")
+    plt.xlabel("-log10(p-value) [Chi2]")
+    plt.ylabel("Feature")
+    plt.title("Chi-Quadrato Importance (Categoriche)")
+    chi2_plot_path = os.path.join(config.EDA_PLOTS_PATH, "chi2_plot.png")
+    plt.savefig(chi2_plot_path)
+    plt.close()
+
+    report_file.write(f"[Chi2] Plot generato: {chi2_plot_path}\n")
+
+###############################################################################
+#                               Main Function
+###############################################################################
+
+def main():
+    # Caricamento dataset
+    data = pd.read_csv(config.RAW_DATA_PATH)
+
+    os.makedirs(config.EDA_PLOTS_PATH, exist_ok=True)
+
+    with open(config.EDA_REPORT_PATH, "w", encoding="utf-8") as report_file:
+        report_file.write("===== EDA REPORT MODIFICATO =====\n\n")
+
+        # 1) Missing
+        analyze_missing_values(data, report_file)
+
+        # Distinzione numeric/categorical
+        numeric_cols = ["age", "bmi", "avg_glucose_level"]
+        categorical_cols = ["gender", "hypertension", "heart_disease", "ever_married",
+                            "work_type", "Residence_type", "smoking_status", "stroke"]
+
+        # 2) Distribuzione Numeriche
+        plot_numeric_distributions(data, numeric_cols, report_file)
+
+        # 2.b) Distribuzione Categoriche (solo hist)
+        plot_categorical_distributions(data, categorical_cols, report_file)
+
+        # 3) Target imbalance (Pie chart)
+        analyze_target_imbalance(data, report_file)
+
+        # 4) Correlazioni
+        analyze_correlations(data, numeric_cols, categorical_cols, report_file)
+
+        # 5) Outlier
+        analyze_outliers(data, numeric_cols, report_file)
+
+        # 6) Rimosso dynamic_pairplot come da richiesta
+
+        # 7) ANOVA / Chi2 con i relativi plot
+        report_file.write("=== ANOVA / Chi-Quadro ===\n")
+        target_col = config.TARGET_COLUMN
+        anova_res = []
+        chi2_res = []
+        if target_col in data.columns and data[target_col].nunique() > 1:
+            # ANOVA numeriche
+            for col in numeric_cols:
+                if col == target_col:
+                    continue
+                groups = [data[data[target_col] == c][col].dropna()
+                          for c in data[target_col].unique()]
+                # Evitiamo col. monotone
+                if len(groups) < 2 or any(len(g) == 0 for g in groups):
+                    continue
+                f_stat, p_val = f_oneway(*groups)
+                anova_res.append((col, f_stat, p_val))
+
+            # Chi2 categoriche
+            for col in categorical_cols:
+                if col == target_col:
+                    continue
+                ct = pd.crosstab(data[col], data[target_col])
+                if ct.shape[0] < 2 or ct.shape[1] < 2:
+                    continue
+                chi2_stat, p_val_chi, _, _ = chi2_contingency(ct)
+                chi2_res.append((col, chi2_stat, p_val_chi))
+
+            # Scrittura testuale
+            report_file.write("ANOVA (numeriche):\n")
+            for col, f_stat, p_val in anova_res:
+                report_file.write(f" - {col}: F={f_stat:.4f}, p={p_val:.6f}\n")
+
+            report_file.write("Chi-Quadro (categoriche):\n")
+            for col, chi2_stat, p_val_chi in chi2_res:
+                report_file.write(f" - {col}: Chi2={chi2_stat:.4f}, p={p_val_chi:.6f}\n")
+            report_file.write("\n")
+
+            # Generiamo i plot
+            plot_anova_results([(c, f, p) for (c, f, p) in anova_res], report_file)
+            plot_chi2_results([(c, chi, p) for (c, chi, p) in chi2_res], report_file)
+
+        else:
+            report_file.write("Target non presente o monotono. ANOVA / Chi2 non calcolati.\n\n")
+
+        # 8) Raccomandazioni finali
+        report_file.write("=== Raccomandazioni Finali ===\n")
+        report_file.write("- Se MCAR: imputazione semplice; altrimenti MAR/MNAR.\n")
+        report_file.write("- Colonne con >30% missing: considerare rimozione/imputazione.\n")
+        report_file.write("- Outlier: trasformazioni (log) o winsorizing.\n")
+        report_file.write("- VIF alto -> rimuovere/combinare feature collineari.\n")
+        report_file.write("- Feature con p-value basso -> rilevanti per il modello.\n")
+        report_file.write("- Target squilibrato? considerare SMOTE/undersampling.\n\n")
+
+        report_file.write("===== FINE EDA REPORT =====\n")
+
+    print(f"[INFO] EDA completata con successo. Plot in: {config.EDA_PLOTS_PATH}, Report in: {config.EDA_REPORT_PATH}")
+
+
+if __name__ == "__main__":
+    main()
