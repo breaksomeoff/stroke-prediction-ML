@@ -11,6 +11,7 @@
 # mentre i plot derivanti da ANOVA e Chi-Quadro sono salvati nella cartella "statistical_tests".
 
 import os
+import sys
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -26,7 +27,8 @@ from scripts import config
 # Impostazione logging di base
 logging.basicConfig(
     level=logging.INFO,
-    format='[%(levelname)s] %(asctime)s - %(message)s'
+    format='[%(levelname)s] %(asctime)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 
 ###############################################################################

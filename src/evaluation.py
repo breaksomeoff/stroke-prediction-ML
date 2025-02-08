@@ -9,6 +9,7 @@
 
 import os
 import logging
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -21,7 +22,8 @@ from scripts import config  # Import delle variabili di configurazione
 # Impostazione logging di base
 logging.basicConfig(
     level=logging.INFO,
-    format='[%(levelname)s] %(asctime)s - %(message)s'
+    format='[%(levelname)s] %(asctime)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 
 def plot_confusion_matrix(cm, classes, title="Matrice di Confusione", cmap=None, save_path=None):

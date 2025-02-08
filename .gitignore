@@ -14,13 +14,10 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # PyCharm
-
 .idea/
-
 *.iml
 *.ipr
 *.iws
-
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/usage.statistics.xml
@@ -58,7 +55,3 @@ results/
 *.jpg
 *.jpeg
 *.mp4
-
-# Jupyter Notebook e cache
-.ipynb_checkpoints/
-*.ipynb

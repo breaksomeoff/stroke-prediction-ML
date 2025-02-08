@@ -9,21 +9,21 @@
 
 import os
 import logging
+import sys
 import numpy as np
 import pandas as pd
-
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV
 from sklearn.metrics import (precision_score, recall_score, accuracy_score, roc_auc_score,
                              precision_recall_curve, fbeta_score)
 from joblib import dump
-
 from scripts import config  # Import delle variabili di configurazione
 
 # Impostazione logging di base
 logging.basicConfig(
     level=logging.INFO,
-    format='[%(levelname)s] %(asctime)s - %(message)s'
+    format='[%(levelname)s] %(asctime)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 
 def compute_cv_metrics(model, X, y, cv_splits=5):

@@ -16,19 +16,19 @@
 #     Le trasformazioni (mediana, encoding) sono calcolate sul train set e poi applicate a val/test.
 
 import os
+import sys
 import pandas as pd
 import numpy as np
 import logging
-
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-
 from scripts import config  # Import delle variabili di configurazione
 
 # Impostazione logging di base
 logging.basicConfig(
     level=logging.INFO,
-    format='[%(levelname)s] %(asctime)s - %(message)s'
+    format='[%(levelname)s] %(asctime)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 
 #######################################################################

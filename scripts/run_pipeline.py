@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 run_pipeline.py
 
@@ -19,7 +18,8 @@ import logging
 # Configuriamo il logging di base
 logging.basicConfig(
     level=logging.INFO,
-    format='[%(levelname)s] %(asctime)s - %(message)s'
+    format='[%(levelname)s] %(asctime)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 
 def run_script(script_path):
@@ -50,7 +50,7 @@ def main():
         evaluation_script = os.path.join(base_dir, "evaluation.py")
 
         # 1. Esecuzione dell'EDA
-        #run_script(eda_script)
+        run_script(eda_script)
 
         # 2. Preprocessing e bilanciamento
         run_script(preprocessing_script)

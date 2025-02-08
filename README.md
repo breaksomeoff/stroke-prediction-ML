@@ -12,25 +12,27 @@ Il progetto include l'intero flusso di sviluppo di un modello ML, dalla **prepar
 
 ```
 stroke-prediction-ML/
-│── 📜 README.md                     # Documentazione del progetto
-│── 📜 requirements.txt              # Librerie necessarie
-│── 📜 .gitignore                    # File ignorati da Git
-│── 📜 LICENSE                       # Licenza del progetto
-│── 📂 data/                         # Dati grezzi e pre-processati
-│   │── 📜 raw/                      # Dataset originale
-│   │── 📜 processed/                # Dataset dopo il pre-processing
-│── 📂 notebooks/                    # Jupyter Notebooks per analisi e sviluppo
-│   │── 📜 01_EDA.ipynb              # Analisi esplorativa dei dati
-│   │── 📜 02_Preprocessing.ipynb    # Pre-processing & Feature Engineering
-│   │── 📜 03_Training.ipynb         # Addestramento del modello
-│   │── 📜 04_Evaluation.ipynb       # Valutazione e metriche
-│── 📂 src/                          # Codice principale del progetto
-│   │── 📜 data_preprocessing.py     # Pulizia e preparazione dati
-│   │── 📜 feature_engineering.py    # Creazione e selezione feature
-│   │── 📜 train_model.py            # Addestramento del modello
-│   │── 📜 evaluate_model.py         # Valutazione delle prestazioni
-│── 📂 models/                       # Modelli addestrati e metriche                    
-└── 📂 scripts/                      # Script per eseguire pipeline
+│── 📜 README.md                  # README del progetto
+│── 📜 requirements.txt           # Librerie necessarie per l'ambiente virtuale (venv)
+│── 📜 .gitignore                 # File e cartelle ignorati da Git
+│── 📜 LICENSE.md                 # Licenza del progetto
+│── 📂 data/                      # Cartella per i dati grezzi e pre-processati
+│   │── 📂 eda                    # File della Data Exploration
+│   │── 📂 raw                    # Dataset originale
+│   │── 📂 processed              # Dataset dopo il pre-processing
+│── 📂 model/                     # Modello addestrato e salvato in formato .joblib
+│   │── 📂 plots                  # Vari plots del modello
+│   │── 📜 evaluation_report.txt  # Report delle metriche del modello
+│   │── 📜 optimal_threshold.txt  # Valore ottimale della threshold del modello
+│   │── 📜 rf-model.joblib        # Modello addestrato con Random Forest
+│── 📂 scripts/                   # Script principali per eseguire pipeline e configurazione
+│   │── 📜 config.py              # Configurazione generale del progetto (percorsi, parametri, ecc.)
+│   │── 📜 run_pipeline.py        # Script principale per eseguire l'intera pipeline di ML
+│── 📂 src/                       # Codice principale del progetto
+│   │── 📜 data_exploration.py    # Analisi esplorativa dei dati (EDA)
+│   │── 📜 data_preprocessing.py  # Pulizia, trasformazione e pre-processing dei dati
+│   │── 📜 model.py               # Definizione, training e salvataggio del modello di Machine Learning
+│   │── 📜 evaluation.py          # Valutazione del modello attraverso metriche e grafici
 ```
 
 ---
@@ -57,11 +59,8 @@ Il dataset utilizzato è disponibile su **Kaggle**:
 ### 🏗️ Tecnologie utilizzate  
 ✔ **Python 3.x**  
 ✔ **Pandas, NumPy** (Analisi dati)  
-✔ **Scikit-Learn, XGBoost** (Modelli di Machine Learning)  
+✔ **Scikit-Learn** (Modelli di Machine Learning)  
 ✔ **Matplotlib, Seaborn** (Visualizzazione dati)  
-✔ **SHAP, LIME** (Interpretabilità del modello)  
-✔ **Jupyter Notebook**  
-
 ---
 
 ### 🚀 Installazione e utilizzo  
@@ -77,31 +76,16 @@ cd stroke-prediction-ML
 pip install -r requirements.txt
 ```
 
-#### ⚡ **3. Eseguire il progetto**
-- **Analisi esplorativa**:
-  ```bash
-  jupyter notebook notebooks/01_EDA.ipynb
-  ```
-- **Pre-processing e Feature Engineering**:
-  ```bash
-  python src/data_preprocessing.py
-  ```
-- **Addestramento dei modelli**:
-  ```bash
-  python src/train_model.py --model xgboost
-  ```
-- **Valutazione dei modelli**:
-  ```bash
-  python src/evaluate_models.py
-  ```
-
----
-
-### 📈 Valutazione dei modelli  
-I modelli saranno valutati utilizzando le seguenti metriche:  
+### 📈 3. Esecuzione e Valutazione del modello  
+Avviare la pipeline tramite il comando  
+```bash
+py run_pipeline.py
+```
+Il modello sarà valutato utilizzando le seguenti metriche:  
 ✔ **Accuracy**  
 ✔ **Precision, Recall, F1-score** (per gestire il bilanciamento delle classi)  
-✔ **ROC-AUC Score**  
+✔ **ROC-AUC Curve**  
+✔ **Precision-Recall Curve**  
 ✔ **Confusion Matrix**  
 
 ---
