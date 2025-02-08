@@ -46,7 +46,7 @@ def compute_cv_metrics(model, X, y, cv_splits=5):
         y_probs_fold = model.predict_proba(X_fold_test)[:, 1]
         roc = roc_auc_score(y_fold_test, y_probs_fold)
 
-        logging.info(f"[CV Fold {fold_idx}] Precision: {prec:.4f} | Recall: {rec:.4f} | F2: {f2:.4f} | ROC-AUC: {roc:.4f}")
+        logging.info(f"[MODEL] [CV Fold {fold_idx}] Precision: {prec:.4f} | Recall: {rec:.4f} | F2: {f2:.4f} | ROC-AUC: {roc:.4f}")
         precision_list.append(prec)
         recall_list.append(rec)
         f2_list.append(f2)
@@ -73,12 +73,12 @@ def find_optimal_threshold(model, X_val, y_val):
     best_idx = np.argmax(f2_scores)
     best_thresh = thresholds[best_idx] if best_idx < len(thresholds) else 1.0
     best_f2 = f2_scores[best_idx]
-    logging.info(f"[Threshold Optimization] Best F2: {best_f2:.4f} at threshold = {best_thresh:.3f}")
+    logging.info(f"[MODEL] [Threshold Optimization] Best F2: {best_f2:.4f} at threshold = {best_thresh:.3f}")
     return best_thresh, best_f2
 
 def main():
     try:
-        logging.info("Inizio addestramento modello Random Forest per stroke prediction.")
+        logging.info("[MODEL] Inizio addestramento modello Random Forest per stroke prediction.")
 
         # 1) Caricamento training e validation set
         train_path = config.TRAIN_DATA_PATH       # ad es. "../data/processed/train.csv"
@@ -92,8 +92,8 @@ def main():
         df_train = pd.read_csv(train_path)
         df_val   = pd.read_csv(val_path)
 
-        logging.info(f"Train set caricato: {df_train.shape[0]} righe, {df_train.shape[1]} colonne.")
-        logging.info(f"Validation set caricato: {df_val.shape[0]} righe, {df_val.shape[1]} colonne.")
+        logging.info(f"[MODEL] Train set caricato: {df_train.shape[0]} righe, {df_train.shape[1]} colonne.")
+        logging.info(f"[MODEL] Validation set caricato: {df_val.shape[0]} righe, {df_val.shape[1]} colonne.")
 
         X_train = df_train.drop(columns=[config.TARGET_COLUMN])
         y_train = df_train[config.TARGET_COLUMN]
@@ -139,31 +139,31 @@ def main():
             verbose=1
         )
 
-        logging.info("Inizio Ricerca Iperparametri RandomizedSearchCV...")
+        logging.info("[MODEL] Inizio Ricerca Iperparametri RandomizedSearchCV...")
         random_search.fit(X_train, y_train)
-        logging.info("Ricerca iperparametri completata.")
+        logging.info("[MODEL] Ricerca iperparametri completata.")
 
         best_rf = random_search.best_estimator_
         best_params = random_search.best_params_
-        logging.info(f"Migliori Parametri Trovati: {best_params}")
+        logging.info(f"[MODEL] Migliori Parametri Trovati: {best_params}")
 
         mean_f2_cv = random_search.cv_results_["mean_test_f2"][random_search.best_index_]
         mean_roc_cv = random_search.cv_results_["mean_test_roc_auc"][random_search.best_index_]
-        logging.info(f"Miglior F2 in CV: {mean_f2_cv:.4f} | Miglior ROC-AUC in CV: {mean_roc_cv:.4f}")
+        logging.info(f"[MODEL] Miglior F2 in CV: {mean_f2_cv:.4f} | Miglior ROC-AUC in CV: {mean_roc_cv:.4f}")
 
         # 4) Riaddestramento su TUTTO il training set con i migliori parametri
         best_rf.fit(X_train, y_train)
 
-        logging.info("Valutazione con cross-validation su training set (solo a scopo diagnostico):")
+        logging.info("[MODEL] Valutazione con cross-validation su training set (solo a scopo diagnostico):")
         metrics_mean = compute_cv_metrics(best_rf, X_train, y_train, cv_splits=5)
-        logging.info(f"[CV Summary] Precision: {metrics_mean['precision_mean']:.4f}, "
+        logging.info(f"[MODEL] [CV Summary] Precision: {metrics_mean['precision_mean']:.4f}, "
                      f"Recall: {metrics_mean['recall_mean']:.4f}, "
                      f"F2: {metrics_mean['f2_mean']:.4f}, "
                      f"ROC-AUC: {metrics_mean['roc_auc_mean']:.4f}")
 
         # 5) Ottimizzazione soglia sul validation set tramite Precision-Recall (ottimizziamo F2)
         best_thresh, best_f2_val = find_optimal_threshold(best_rf, X_val, y_val)
-        logging.info(f"Soglia ottimale (val) scelta = {best_thresh:.3f} (F2={best_f2_val:.4f})")
+        logging.info(f"[MODEL] Soglia ottimale (val) scelta = {best_thresh:.3f} (F2={best_f2_val:.4f})")
 
         # 6) Valutazione finale sul Validation Set usando la soglia ottimale
         y_probs_val = best_rf.predict_proba(X_val)[:, 1]
@@ -175,30 +175,30 @@ def main():
         acc_val  = accuracy_score(y_val, y_pred_thresh)
         roc_val  = roc_auc_score(y_val, y_probs_val)
 
-        logging.info(f"[VALIDATION] Accuracy={acc_val:.4f} | Precision={prec_val:.4f} | Recall={rec_val:.4f} "
+        logging.info(f"[MODEL] [VALIDATION] Accuracy={acc_val:.4f} | Precision={prec_val:.4f} | Recall={rec_val:.4f} "
                      f"| F2={f2_val:.4f} | ROC-AUC={roc_val:.4f}")
 
         # 7) Importanza delle feature
         feature_importances = best_rf.feature_importances_
         feature_names = X_train.columns
         imp_sorted_idx = np.argsort(feature_importances)[::-1]
-        logging.info("[FEATURE IMPORTANCES - descending order]")
+        logging.info("[MODEL] [FEATURE IMPORTANCES - ordine decrescente]:")
         for idx in imp_sorted_idx:
             logging.info(f"  {feature_names[idx]}: {feature_importances[idx]:.4f}")
 
         # 8) Salvataggio del modello e della soglia ottimale
         os.makedirs(os.path.dirname(config.MODEL_PATH), exist_ok=True)
         dump(best_rf, config.MODEL_PATH)
-        logging.info(f"Modello salvato in: {config.MODEL_PATH}")
+        logging.info(f"[MODEL] Modello salvato in: {config.MODEL_PATH}")
 
         with open(config.THRESHOLD_OPTIMAL_PATH, "w") as f:
             f.write(str(best_thresh))
-        logging.info(f"Soglia ottimale salvata in: {config.THRESHOLD_OPTIMAL_PATH}")
+        logging.info(f"[MODEL] Soglia ottimale salvata in: {config.THRESHOLD_OPTIMAL_PATH}")
 
-        logging.info("=== Training Completato con Successo ===")
+        logging.info("[SUCCESS] Addestramento completato con successo.")
 
     except Exception as e:
-        logging.error(f"Errore durante l'addestramento del modello: {e}")
+        logging.error(f"[FAIL] Errore durante l'addestramento del modello: {e}")
         raise e
 
 if __name__ == "__main__":
