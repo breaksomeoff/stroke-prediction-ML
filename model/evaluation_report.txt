@@ -1,0 +1,8 @@
+===== REPORT FINALE DI VALUTAZIONE =====
+
+Accuracy: 0.8618
+Precision: 0.2119
+Recall: 0.6579
+F1-Score: 0.3205
+ROC-AUC: 0.8243
+Soglia Ottimale: 0.5639
