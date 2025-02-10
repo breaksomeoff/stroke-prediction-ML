@@ -1,12 +1,7 @@
 # data_exploration.py
-# EDA per la predizione dell'ictus (versione con modifiche richieste):
-#   - Rimosse: dynamic pairplot, missing heatmap, missing vs target,
-#              boxplot con hue per age/avg_glucose_level/bmi, donut chart del target.
-#   - Aggiunti:
-#       * Histogram per feature categoriche
-#       * Barplot ANOVA (numeriche)
-#       * Barplot Chi-Quadro (categoriche)
+# EDA per la predizione dell'ictus:
 #
+# Tutti i plot vengono salvati in "data/eda/plots" e il report in "data/eda/eda_report.txt"
 # I plot per correlazioni (matrice numerica, Cramér's V) vengono salvati nella cartella "correlations"
 # mentre i plot derivanti da ANOVA e Chi-Quadro sono salvati nella cartella "statistical_tests".
 
@@ -21,7 +16,6 @@ from scipy.stats import f_oneway, chi2_contingency
 from pyampute.exploration.mcar_statistical_tests import MCARTest
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 import logging
-
 from scripts import config
 
 # Impostazione logging di base
@@ -81,8 +75,7 @@ def compute_vif(df, numeric_cols):
 
 def analyze_missing_values(data, report_file):
     """
-    - Rimosso: heatmap e missing_vs_target.
-    - Manteniamo solo il barplot dei missing e Little’s MCAR Test.
+    - Manteniamo il barplot dei missing e Little’s MCAR Test.
     """
     missing_plots_path = os.path.join(config.EDA_PLOTS_PATH, "missing_plots")
     os.makedirs(missing_plots_path, exist_ok=True)
@@ -122,7 +115,6 @@ def analyze_missing_values(data, report_file):
 
 def plot_numeric_distributions(data, numeric_cols, report_file):
     """
-    - Rimuove il boxplot per age, avg_glucose_level e bmi.
     - Mantiene l'istogramma con hue per tutte le variabili numeriche.
     """
     target_col = config.TARGET_COLUMN
@@ -186,7 +178,7 @@ def plot_categorical_distributions(data, cat_cols, report_file):
 
 def analyze_target_imbalance(data, report_file):
     """
-    Mantiene solo la Pie chart per il target.
+    Mantiene la Pie chart per il target.
     """
     target_col = config.TARGET_COLUMN
     if target_col not in data.columns:
@@ -401,9 +393,7 @@ def main():
         # 5) Outlier Analysis
         analyze_outliers(data, numeric_cols, report_file)
 
-        # 6) Dynamic pairplot rimosso come da richiesta
-
-        # 7) ANOVA / Chi-Quadro con i relativi plot
+        # 6) ANOVA / Chi-Quadro con i relativi plot
         report_file.write("=== ANOVA / Chi-Quadro ===\n")
         target_col = config.TARGET_COLUMN
         anova_res = []

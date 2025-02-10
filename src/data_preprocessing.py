@@ -2,8 +2,7 @@
 # Script migliorato per il preprocessing del dataset stroke-data.csv
 # Obiettivo: creare Train (70%), Validation (15%) e Test (15%) set,
 # applicando le trasformazioni (imputazione, encoding, ecc.) in modo da
-# evitare data leakage. In questa versione **non si genera alcun dato artificiale**
-# (ossia non si applica SMOTETomek) per preservare la distribuzione reale.
+# evitare data leakage.
 #
 # Passi principali:
 #   1) Caricamento dataset
@@ -12,8 +11,8 @@
 #   4) Applicazione delle stesse trasformazioni su validation/test
 #   5) Salvataggio dei CSV finali (train, validation, test)
 #
-# NB: Nessun oversampling/undersampling viene applicato (non si creano dati artificiali).
-#     Le trasformazioni (mediana, encoding) sono calcolate sul train set e poi applicate a val/test.
+#   NB: Nessun oversampling/undersampling viene applicato (non verranno creati più dati artificiali in seguito ai tentativi precedenti).
+#   Le trasformazioni (mediana, encoding) sono calcolate sul train set e poi applicate a val/test.
 
 import os
 import sys
@@ -107,7 +106,7 @@ def main():
         stratify=y_temp
     )
 
-    # Rimuoviamo eventuali feature poco informative
+    # Rimuoviamo le feature poco informative
     features_to_remove = ["id", "gender", "Residence_type"]
     X_train.drop(columns=features_to_remove, inplace=True, errors='ignore')
     X_val.drop(columns=features_to_remove, inplace=True, errors='ignore')
@@ -128,8 +127,6 @@ def main():
         apply_impute(df_val, "bmi", median_bmi)
         apply_impute(df_test, "bmi", median_bmi)
         logging.info("[PRE-PROCESSING] Imputazione per 'bmi' completata.")
-
-    # NOTA: Non applichiamo alcun oversampling, per evitare dati artificiali!
 
     # 3.b Encoding variabili categoriche:
     #     Label Encoding per multi-level: 'work_type', 'smoking_status'
@@ -165,7 +162,6 @@ def main():
     logging.info(f"\n{df_val[config.TARGET_COLUMN].value_counts()}")
     logging.info("[PRE-PROCESSING] Distribuzione TEST:")
     logging.info(f"\n{df_test[config.TARGET_COLUMN].value_counts()}")
-
     logging.info("[SUCCESS] Preprocessing completato con successo.")
 
 if __name__ == "__main__":

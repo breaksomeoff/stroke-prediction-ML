@@ -14,8 +14,7 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV
-from sklearn.metrics import (precision_score, recall_score, accuracy_score, roc_auc_score,
-                             precision_recall_curve, fbeta_score)
+from sklearn.metrics import (precision_score, recall_score, accuracy_score, roc_auc_score, precision_recall_curve, fbeta_score)
 from joblib import dump
 from scripts import config  # Import delle variabili di configurazione
 
@@ -28,7 +27,7 @@ logging.basicConfig(
 
 def compute_cv_metrics(model, X, y, cv_splits=5):
     """
-    Esegue una StratifiedKFold cross-validation e calcola precision, recall, F2 e ROC-AUC per ogni fold.
+    Esegue una Stratified K-Fold cross-validation e calcola precision, recall, F2 e ROC-AUC per ogni fold.
     Restituisce i punteggi medi e stampa quelli di ogni fold.
     """
     skf = StratifiedKFold(n_splits=cv_splits, shuffle=True, random_state=config.RANDOM_STATE)
@@ -81,8 +80,8 @@ def main():
         logging.info("[MODEL] Inizio addestramento modello Random Forest per stroke prediction.")
 
         # 1) Caricamento training e validation set
-        train_path = config.TRAIN_DATA_PATH       # ad es. "../data/processed/train.csv"
-        val_path   = config.VALIDATION_DATA_PATH  # ad es. "../data/processed/validation.csv"
+        train_path = config.TRAIN_DATA_PATH
+        val_path   = config.VALIDATION_DATA_PATH
 
         if not os.path.exists(train_path):
             raise FileNotFoundError(f"Train file non trovato: {train_path}")
@@ -161,11 +160,11 @@ def main():
                      f"F2: {metrics_mean['f2_mean']:.4f}, "
                      f"ROC-AUC: {metrics_mean['roc_auc_mean']:.4f}")
 
-        # 5) Ottimizzazione soglia sul validation set tramite Precision-Recall (ottimizziamo F2)
+        # 5) Ottimizzazione soglia sul validation set tramite il compromesso Precision-Recall (ottimizziamo F2)
         best_thresh, best_f2_val = find_optimal_threshold(best_rf, X_val, y_val)
         logging.info(f"[MODEL] Soglia ottimale (val) scelta = {best_thresh:.3f} (F2={best_f2_val:.4f})")
 
-        # 6) Valutazione finale sul Validation Set usando la soglia ottimale
+        # 6) Valutazione finale sul Validation Set usando la soglia di threshold ottimale
         y_probs_val = best_rf.predict_proba(X_val)[:, 1]
         y_pred_thresh = (y_probs_val >= best_thresh).astype(int)
 

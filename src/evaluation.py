@@ -14,8 +14,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import (accuracy_score, precision_score, recall_score, f1_score,
-                             roc_auc_score, roc_curve, confusion_matrix, precision_recall_curve)
+from sklearn.metrics import (accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, roc_curve, confusion_matrix, precision_recall_curve)
 from joblib import load
 from scripts import config  # Import delle variabili di configurazione
 

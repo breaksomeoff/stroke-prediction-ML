@@ -1,10 +1,10 @@
 """
 run_pipeline.py
 
-Script per orchestrare l'intero processo del progetto:
+Script per orchestrare l'intero processo progettuale:
 1. Esecuzione dell'EDA (data_exploration.py)
 2. Preprocessing e bilanciamento (data_preprocessing.py)
-3. Addestramento del modello (model.py)
+3. Addestramento del modello e validazione (model.py)
 4. Valutazione finale (evaluation.py)
 
 Ogni fase viene eseguita come script separato per mantenere la modularità.
