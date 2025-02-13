@@ -15,11 +15,12 @@ stroke-prediction-ML/
 │── 📜 README.md                  # README del progetto
 │── 📜 requirements.txt           # Librerie necessarie per l'ambiente virtuale (venv)
 │── 📜 .gitignore                 # File e cartelle ignorati da Git
+│── 📜 StrokePredictionReport.pdf # Report progettuale
 │── 📜 LICENSE.md                 # Licenza del progetto
-│── 📂 data/                      # Cartella per i dati grezzi e pre-processati
-│   │── 📂 eda                    # File della Data Exploration
-│   │── 📂 raw                    # Dataset originale
-│   │── 📂 processed              # Dataset dopo il pre-processing
+│── 📂 data/                      # Cartella per i dati grezzi e pre-processati (non visibile in quanto ignorata da Git)
+│   │── 📂 eda                    # File della Data Exploration (non visibile)
+│   │── 📂 raw                    # Dataset originale (non visibile)
+│   │── 📂 processed              # Dataset dopo il pre-processing (non visibile)
 │── 📂 model/                     # Modello addestrato e salvato in formato .joblib
 │   │── 📂 plots                  # Vari plots del modello
 │   │── 📜 evaluation_report.txt  # Report delle metriche del modello
