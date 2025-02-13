@@ -36,9 +36,9 @@ def main():
     hypertension = st.selectbox("Hypertension:", [0, 1])  # 0 = No, 1 = Yes
     heart_disease = st.selectbox("Heart Disease:", [0, 1])  # 0 = No, 1 = Yes
     ever_married = st.selectbox("Ever Married:", [0, 1])
-    work_type = st.selectbox("Work Type:", ["Private", "Self-employed", "Govt_job", "Children", "Never_worked"])
-    avg_glucose_level = st.number_input("Average Glucose Level:", min_value=0.0, max_value=300.0, value=100.0)
-    bmi = st.number_input("BMI:", min_value=0.0, max_value=60.0, value=25.0)
+    work_type = st.selectbox("Work Type:", ["Private", "Self-employed", "Govt_job", "children", "Never_worked"])
+    avg_glucose_level = st.number_input("Average Glucose Level:", min_value=20.0, max_value=300.0, value=100.0)
+    bmi = st.number_input("BMI:", min_value=0.0, max_value=100.0, value=25.0)
     smoking_status = st.selectbox("Smoking Status:", ["never smoked", "formerly smoked", "smokes", "Unknown"])
 
     # Bottone per predizione
@@ -66,9 +66,9 @@ def main():
 
         # Mostra il risultato
         if prediction == 1:
-            st.error(f"**High Risk**: La probabilità stimata di ictus è ~{prediction_proba:.2f}%")
+            st.error(f"**A rischio**: La probabilità stimata di ictus è ~{prediction_proba:.2f}%")
         else:
-            st.success(f"**Low Risk**: La probabilità stimata di ictus è ~{prediction_proba:.2f}%")
+            st.success(f"**Non a rischio**: La probabilità stimata di ictus è ~{prediction_proba:.2f}%")
 
 if __name__ == "__main__":
     main()
