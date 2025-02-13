@@ -19,124 +19,79 @@ import sys
 import pandas as pd
 import numpy as np
 import logging
+import joblib  # Import per salvare gli encoder
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from scripts import config  # Import delle variabili di configurazione
 
-# Impostazione logging di base
 logging.basicConfig(
     level=logging.INFO,
     format='[%(levelname)s] %(asctime)s - %(message)s',
     handlers=[logging.StreamHandler(sys.stdout)]
 )
 
-#######################################################################
-#                    Funzioni di Utilità per il Preprocessing
-#######################################################################
-
-def calculate_median_and_impute(df_train, column):
-    """
-    Calcola la mediana su df_train[column] e la usa per imputare i NaN.
-    Ritorna la mediana per poterla applicare anche a validation/test.
-    """
-    median_value = df_train[column].median()
-    df_train[column] = df_train[column].fillna(median_value)
-    return median_value
-
-def apply_impute(df, column, impute_value):
-    """
-    Usa la mediana calcolata sul train per imputare anche su validation/test.
-    """
-    df[column] = df[column].fillna(impute_value)
-
 def create_label_encoder(train_series):
-    """
-    Crea e addestra un LabelEncoder su train_series (colonna del train).
-    """
+    """Crea e addestra un LabelEncoder su train_series."""
     le = LabelEncoder()
     le.fit(train_series.astype(str))
     return le
 
-def apply_label_encoding(df_train, df_val, df_test, column):
+def apply_label_encoding(df_train, df_val, df_test, column, encoders_dict):
     """
-    Crea un LabelEncoder sul train e lo applica a train/val/test.
-    Gestisce eventuali categorie sconosciute in val/test mappandole a -1.
+    Crea un LabelEncoder per df_train[column], lo applica a train/val/test
+    e lo salva in encoders_dict per uso futuro.
     """
     le = create_label_encoder(df_train[column])
-    # Encodiamo il train
     df_train[column] = le.transform(df_train[column].astype(str))
 
-    # Encodiamo validation e test, gestendo eventuali categorie sconosciute
     for df_ in [df_val, df_test]:
         df_[column] = df_[column].apply(lambda x: x if x in le.classes_ else None)
         df_[column] = df_[column].astype("object").replace({None: "UNK"})
         if "UNK" not in le.classes_:
-            new_classes = list(le.classes_) + ["UNK"]
-            le.classes_ = np.array(new_classes, dtype=object)
+            le.classes_ = np.array(list(le.classes_) + ["UNK"], dtype=object)
         df_[column] = df_[column].map(lambda x: -1 if x == "UNK" else le.transform([x])[0])
 
-#######################################################################
-#                                Main
-#######################################################################
+    encoders_dict[column] = le  # Salva l'encoder
 
 def main():
-    # 1) Caricamento dataset raw
     df = pd.read_csv(config.RAW_DATA_PATH)
-    logging.info(f"[PRE-PROCESSING] Dataset raw caricato: {df.shape[0]} righe, {df.shape[1]} colonne.")
-
-    # 2) Suddivisione in Train (70%), Validation (15%) e Test (15%)
-    if config.TARGET_COLUMN not in df.columns:
-        raise ValueError(f"[PRE-PROCESSING] Target '{config.TARGET_COLUMN}' non presente.")
+    logging.info(f"[PRE-PROCESSING] Dataset caricato: {df.shape}")
 
     X_full = df.drop(columns=[config.TARGET_COLUMN])
     y_full = df[config.TARGET_COLUMN]
 
-    # Primo split: Train 70% vs Temp 30%
     X_train, X_temp, y_train, y_temp = train_test_split(
-        X_full, y_full,
-        test_size=0.30,
-        random_state=config.RANDOM_STATE,
-        stratify=y_full
+        X_full, y_full, test_size=0.30, random_state=config.RANDOM_STATE, stratify=y_full
     )
-    # Secondo split: Validation 15% e Test 15% (della totalità)
     X_val, X_test, y_val, y_test = train_test_split(
-        X_temp, y_temp,
-        test_size=0.5,
-        random_state=config.RANDOM_STATE,
-        stratify=y_temp
+        X_temp, y_temp, test_size=0.5, random_state=config.RANDOM_STATE, stratify=y_temp
     )
 
-    # Rimuoviamo le feature poco informative
     features_to_remove = ["id", "gender", "Residence_type"]
-    X_train.drop(columns=features_to_remove, inplace=True, errors='ignore')
-    X_val.drop(columns=features_to_remove, inplace=True, errors='ignore')
-    X_test.drop(columns=features_to_remove, inplace=True, errors='ignore')
+    X_train = X_train.drop(columns=features_to_remove, errors='ignore')
+    X_val = X_val.drop(columns=features_to_remove, errors='ignore')
+    X_test = X_test.drop(columns=features_to_remove, errors='ignore')
 
-    # Riconcateniamo in DataFrame completi
     df_train = pd.concat([X_train, y_train], axis=1).reset_index(drop=True)
-    df_val   = pd.concat([X_val,   y_val],   axis=1).reset_index(drop=True)
-    df_test  = pd.concat([X_test,  y_test],  axis=1).reset_index(drop=True)
+    df_val   = pd.concat([X_val, y_val], axis=1).reset_index(drop=True)
+    df_test  = pd.concat([X_test, y_test], axis=1).reset_index(drop=True)
 
-    logging.info(f"[PRE-PROCESSING] Train set: {X_train.shape[0]} righe | Validation: {X_val.shape[0]} | Test: {X_test.shape[0]}")
+    logging.info(f"[PRE-PROCESSING] Train: {X_train.shape[0]} | Val: {X_val.shape[0]} | Test: {X_test.shape[0]}")
 
-    # 3) Preprocessing (calcolato sul training set e applicato a validation/test)
-    # 3.a Imputazione 'bmi'
     if "bmi" in df_train.columns:
-        median_bmi = calculate_median_and_impute(df_train, "bmi")
-        # Applica la mediana a validation e test
-        apply_impute(df_val, "bmi", median_bmi)
-        apply_impute(df_test, "bmi", median_bmi)
+        median_bmi = df_train["bmi"].median()
+        df_train["bmi"] = df_train["bmi"].fillna(median_bmi)
+        df_val["bmi"] = df_val["bmi"].fillna(median_bmi)
+        df_test["bmi"] = df_test["bmi"].fillna(median_bmi)
         logging.info("[PRE-PROCESSING] Imputazione per 'bmi' completata.")
 
-    # 3.b Encoding variabili categoriche:
-    #     Label Encoding per multi-level: 'work_type', 'smoking_status'
+    encoders = {}
     cat_multi = ["work_type", "smoking_status"]
     for c in cat_multi:
         if c in df_train.columns:
-            apply_label_encoding(df_train, df_val, df_test, c)
+            apply_label_encoding(df_train, df_val, df_test, c, encoders)
             logging.info(f"[PRE-PROCESSING] Encoding per '{c}' completato.")
 
-    # Binarizzazione per 'ever_married'
     if "ever_married" in df_train.columns:
         bin_map = {"No": 0, "Yes": 1}
         df_train["ever_married"] = df_train["ever_married"].map(bin_map)
@@ -144,25 +99,13 @@ def main():
         df_test["ever_married"]  = df_test["ever_married"].map(bin_map)
         logging.info("[PRE-PROCESSING] Binarizzazione per 'ever_married' completata.")
 
-    # 4) Salvataggio dei dataset finali
     os.makedirs(os.path.dirname(config.TRAIN_DATA_PATH), exist_ok=True)
-
     df_train.to_csv(config.TRAIN_DATA_PATH, index=False)
     df_val.to_csv(config.VALIDATION_DATA_PATH, index=False)
     df_test.to_csv(config.TEST_DATA_PATH, index=False)
 
-    logging.info(f"[PRE-PROCESSING] Train salvato: {df_train.shape[0]} righe")
-    logging.info(f"[PRE-PROCESSING] Validation salvato: {df_val.shape[0]} righe")
-    logging.info(f"[PRE-PROCESSING] Test salvato: {df_test.shape[0]} righe")
-
-    # Distribuzione classi
-    logging.info("[PRE-PROCESSING] Distribuzione TRAIN:")
-    logging.info(f"\n{df_train[config.TARGET_COLUMN].value_counts()}")
-    logging.info("[PRE-PROCESSING] Distribuzione VALIDATION:")
-    logging.info(f"\n{df_val[config.TARGET_COLUMN].value_counts()}")
-    logging.info("[PRE-PROCESSING] Distribuzione TEST:")
-    logging.info(f"\n{df_test[config.TARGET_COLUMN].value_counts()}")
-    logging.info("[SUCCESS] Preprocessing completato con successo.")
+    joblib.dump(encoders, os.path.join(os.path.dirname(config.ENCODER_PATH), "label_encoders.joblib"))
+    logging.info(f"[PRE-PROCESSING] Label Encoders salvati con successo in \"{config.ENCODER_PATH}\"")
 
 if __name__ == "__main__":
     main()

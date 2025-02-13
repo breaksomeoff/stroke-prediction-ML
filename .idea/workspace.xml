@@ -4,14 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00af345b-75e5-47ac-b358-b44001119cd5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/scripts/run_pipeline.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/evaluation.py" afterDir="false" />
+    <list default="true" id="00af345b-75e5-47ac-b358-b44001119cd5" name="Changes" comment="Updating project skeleton to contain the report&#10;&#10;Co-authored-by: breaksomeoff &lt;alex3009898@gmail.com&gt;">
+      <change afterPath="$PROJECT_DIR$/model/label_encoders.joblib" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/ui_app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/stroke-prediction-ML.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/stroke-prediction-ML.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data_exploration.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_exploration.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/data_preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_preprocessing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +39,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/breaksomeoff/stroke-prediction-ML.git&quot;,
-    &quot;accountId&quot;: &quot;19b5ad74-fcaf-4581-9c13-dd14607a72df&quot;
+    &quot;accountId&quot;: &quot;f0865c25-6b56-4946-8e71-54a6bd3503e9&quot;
   }
 }</component>
   <component name="ProblemsViewState">
@@ -62,6 +64,7 @@
     "Python.evaluation.executor": "Run",
     "Python.model.executor": "Run",
     "Python.run_pipeline.executor": "Run",
+    "Python.ui_app.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
@@ -84,35 +87,14 @@
       <recent name="C:\Users\alex3\PycharmProjects\stroke-prediction-ML\data\raw" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\adria\PycharmProjects\stroke-prediction-ML\model" />
+      <recent name="C:\Users\adria\PycharmProjects\stroke-prediction-ML" />
       <recent name="C:\Users\Alessio\PycharmProjects\stroke-prediction-ML\data" />
       <recent name="C:\Users\Alessio\PycharmProjects\stroke-prediction-ML\data\raw" />
       <recent name="C:\Users\alex3\PycharmProjects\stroke-prediction-ML\data\raw" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.evaluation">
-    <configuration name="data_exploration" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="stroke-prediction-ML" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/data_exploration.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.data_preprocessing">
     <configuration name="data_preprocessing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="stroke-prediction-ML" />
       <option name="ENV_FILES" value="" />
@@ -205,21 +187,44 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="ui_app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="stroke-prediction-ML" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/ui_app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.data_preprocessing" />
+        <item itemvalue="Python.ui_app" />
         <item itemvalue="Python.evaluation" />
         <item itemvalue="Python.model" />
-        <item itemvalue="Python.data_preprocessing" />
         <item itemvalue="Python.run_pipeline" />
-        <item itemvalue="Python.data_exploration" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-PY-243.22562.220" />
-        <option value="bundled-python-sdk-0fc6c617c4bd-9a18a617cbe4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.22562.220" />
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-PY-243.23654.177" />
+        <option value="bundled-python-sdk-91d3a02ef49d-43b77aa2d136-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.23654.177" />
       </set>
     </attachedChunks>
   </component>
@@ -246,6 +251,11 @@
       <workItem from="1738858443132" duration="2968000" />
       <workItem from="1738928836681" duration="14883000" />
       <workItem from="1739011569912" duration="6718000" />
+      <workItem from="1739222682796" duration="72000" />
+      <workItem from="1739395117004" duration="1737000" />
+      <workItem from="1739398630430" duration="3023000" />
+      <workItem from="1739402115307" duration="3424000" />
+      <workItem from="1739457644952" duration="5950000" />
     </task>
     <task id="LOCAL-00001" summary="Implement train/test split, SMOTE, and custom column formatting&#10;&#10;This commit adds a new script that:&#10;- Splits the dataset into train/test sets using stratification.&#10;- Applies SMOTE on the training set to handle class imbalance (stroke=1).&#10;- Formats specific columns (age, avg_glucose_level, and bmi) to ensure consistency with original dataset structures&#10;&#10;The final train set (after SMOTE and formatting) and the test set (original or optionally formatted) are saved as CSV.&#10;&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;">
       <option name="closed" value="true" />
@@ -271,7 +281,23 @@
       <option name="project" value="LOCAL" />
       <updated>1738947307401</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Adding the complete project report authored by De Vita Adriano and Inglese Alessio&#10;&#10;Co-authored-by: breaksomeoff &lt;alex3009898@gmail.com&gt;">
+      <option name="closed" value="true" />
+      <created>1739406592317</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1739406592317</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Updating project skeleton to contain the report&#10;&#10;Co-authored-by: breaksomeoff &lt;alex3009898@gmail.com&gt;">
+      <option name="closed" value="true" />
+      <created>1739406870361</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1739406870361</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -284,15 +310,19 @@
     <MESSAGE value="Updated scripts to support both Random Forest and Gradient Boosting&#10;&#10;- Models are now loaded dynamically based on provided file paths.&#10;- Ensured consistency across the pipeline by standardizing function inputs.&#10;- Now pre-processing generates two CSV files: one with One-Hot Encoding and one with Label Encoding for better model compatibility.&#10;- Improved modularity for easier model comparison.&#10;&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;&quot;" />
     <MESSAGE value="Updated .gitignore" />
     <MESSAGE value="Project refactored&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Project refactored&#10;Co-authored-by: Adriano De Vita &lt;adrianodevita8@gmail.com&gt;" />
+    <MESSAGE value="Adding the complete project report authored by De Vita Adriano and Inglese Alessio&#10;&#10;Co-authored-by: breaksomeoff &lt;alex3009898@gmail.com&gt;" />
+    <MESSAGE value="Updating project skeleton to contain the report&#10;&#10;Co-authored-by: breaksomeoff &lt;alex3009898@gmail.com&gt;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updating project skeleton to contain the report&#10;&#10;Co-authored-by: breaksomeoff &lt;alex3009898@gmail.com&gt;" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/stroke_prediction_ML$data_exploration.coverage" NAME="data_exploration Coverage Results" MODIFIED="1738408070654" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/git_rebase_todo$data_preprocessing.coverage" NAME="data_preprocessing Coverage Results" MODIFIED="1739017886973" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/stroke_prediction_ML$run_pipeline.coverage" NAME="run_pipeline Coverage Results" MODIFIED="1739027464663" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
+    <SUITE FILE_PATH="coverage/git_rebase_todo$model.coverage" NAME="model Coverage Results" MODIFIED="1739017907841" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/stroke_prediction_ML$ui_app.coverage" NAME="ui_app Coverage Results" MODIFIED="1739458531325" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
+    <SUITE FILE_PATH="coverage/git_rebase_todo$evaluation.coverage" NAME="evaluation Coverage Results" MODIFIED="1739018089856" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/stroke_prediction_ML$data_exploration.coverage" NAME="data_exploration Coverage Results" MODIFIED="1739178028794" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/git_rebase_todo$run_pipeline.coverage" NAME="run_pipeline Coverage Results" MODIFIED="1739014792338" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
     <SUITE FILE_PATH="coverage/git_rebase_todo$data_exploration.coverage" NAME="data_exploration Coverage Results" MODIFIED="1738860516441" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
-    <SUITE FILE_PATH="coverage/git_rebase_todo$evaluation.coverage" NAME="evaluation Coverage Results" MODIFIED="1739018089856" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
-    <SUITE FILE_PATH="coverage/stroke_prediction_ML$run_pipeline.coverage" NAME="run_pipeline Coverage Results" MODIFIED="1738687092802" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
-    <SUITE FILE_PATH="coverage/git_rebase_todo$data_preprocessing.coverage" NAME="data_preprocessing Coverage Results" MODIFIED="1739017886973" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
-    <SUITE FILE_PATH="coverage/git_rebase_todo$model.coverage" NAME="model Coverage Results" MODIFIED="1739017907841" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/stroke_prediction_ML$data_preprocessing.coverage" NAME="data_preprocessing Coverage Results" MODIFIED="1739459747988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>

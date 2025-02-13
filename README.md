@@ -13,22 +13,24 @@ Il progetto include l'intero flusso di sviluppo di un modello ML, dalla **prepar
 ```
 stroke-prediction-ML/
 │── 📜 README.md                  # README del progetto
-│── 📜 requirements.txt           # Librerie necessarie per l'ambiente virtuale (venv)
+│── 📜 requirements.txt           # Librerie necessarie per l'ambiente virtuale (.venv)
 │── 📜 .gitignore                 # File e cartelle ignorati da Git
 │── 📜 StrokePredictionReport.pdf # Report progettuale
-│── 📜 LICENSE.md                 # Licenza del progetto
+│── 📜 LICENSE.md                 # Licenza MIT del progetto
 │── 📂 data/                      # Cartella per i dati grezzi e pre-processati (non visibile in quanto ignorata da Git)
 │   │── 📂 eda                    # File della Data Exploration (non visibile)
 │   │── 📂 raw                    # Dataset originale (non visibile)
 │   │── 📂 processed              # Dataset dopo il pre-processing (non visibile)
-│── 📂 model/                     # Modello addestrato e salvato in formato .joblib
+│── 📂 model/                     # Modello addestrato con i relativi encoders, il tutto salvato in formato .joblib
 │   │── 📂 plots                  # Vari plots del modello
 │   │── 📜 evaluation_report.txt  # Report delle metriche del modello
 │   │── 📜 optimal_threshold.txt  # Valore ottimale della threshold del modello
 │   │── 📜 rf-model.joblib        # Modello addestrato con Random Forest
+│   │── 📜 label-encoders.joblib  # Label Encoder delle feature categoriche del modello salvato in .joblib
 │── 📂 scripts/                   # Script principali per eseguire pipeline e configurazione
 │   │── 📜 config.py              # Configurazione generale del progetto (percorsi, parametri, ecc.)
 │   │── 📜 run_pipeline.py        # Script principale per eseguire l'intera pipeline di ML
+│   │── 📜 ui_app.py              # Interfacca grafica per effettuare la predizione di ictus sui dati inseriti dall'utente
 │── 📂 src/                       # Codice principale del progetto
 │   │── 📜 data_exploration.py    # Analisi esplorativa dei dati (EDA)
 │   │── 📜 data_preprocessing.py  # Pulizia, trasformazione e pre-processing dei dati
@@ -82,7 +84,14 @@ Avviare la pipeline tramite il comando
 ```bash
 py run_pipeline.py
 ```
-Il modello sarà valutato utilizzando le seguenti metriche:  
+
+### 💻 4. Esecuzione applicazione e predizione su dati utente  
+Avviare l'esecuzione dell'app all'interno del percorso principale della repository tramite il comando:
+```bash
+streamlit run scripts/ui_app.py
+```
+
+Il modello verrà valutato attraverso le seguenti metriche:  
 ✔ **Accuracy**  
 ✔ **Precision, Recall, F1-score** (per gestire il bilanciamento delle classi)  
 ✔ **ROC-AUC Curve**  
